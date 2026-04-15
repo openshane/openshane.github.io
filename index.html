@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>openshane - 欢迎来到我的世界</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #4ecdc4;
+            --accent: #ffe66d;
+            --dark: #2d3436;
+            --light: #f8f9fa;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .avatar-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid var(--primary);
+            box-shadow: 0 0 30px rgba(255, 107, 107, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .bio {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .badges {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .badge:hover {
+            transform: scale(1.05);
+            background: var(--primary);
+        }
+        
+        .section {
+            margin-top: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '▸';
+            color: var(--primary);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+        }
+        
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .tech-item {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2));
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--light);
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        
+        .link-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateX(10px);
+        }
+        
+        .link-icon {
+            font-size: 1.5rem;
+        }
+        
+        .receipt-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            cursor: grab;
+            z-index: 100;
+        }
+        
+        .receipt {
+            width: 280px;
+            background: #f5f5f0;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            color: #333;
+            transform-origin: top center;
+            user-select: none;
+        }
+        
+        .receipt:active {
+            cursor: grabbing;
+        }
+        
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px dashed #333;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .receipt-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        .receipt-subtitle {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .receipt-items {
+            font-size: 0.75rem;
+            line-height: 1.8;
+        }
+        
+        .receipt-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .receipt-total {
+            border-top: 2px dashed #333;
+            margin-top: 15px;
+            padding-top: 15px;
+            font-weight: 700;
+        }
+        
+        .receipt-footer {
+            text-align: center;
+            font-size: 0.6rem;
+            color: #999;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+        
+        .mouse-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .profile-card {
+                padding: 25px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .receipt-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div class="content">
+        <div class="profile-card">
+            <div class="avatar-container">
+                <img class="avatar" src="https://avatars.githubusercontent.com/u/112454509?v=4" alt="avatar">
+            </div>
+            
+            <h1>Hi, I'm openshane 👋</h1>
+            <p class="bio">🚀 全栈开发者 | 🎯 技术爱好者 | 💡 永远在学习路上</p>
+            
+            <div class="badges">
+                <span class="badge">🔧 Python</span>
+                <span class="badge">🌐 Web</span>
+                <span class="badge">🤖 AI/ML</span>
+                <span class="badge">🔌 硬件</span>
+                <span class="badge">📱 移动端</span>
+            </div>
+        </div>
+        
+        <div class="profile-card">
+            <div class="section">
+                <h3 class="section-title">📊 我的数据</h3>
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="window.open('https://github.com/openshane', '_blank')">
+                        <div class="stat-number">2</div>
+                        <div class="stat-label">仓库</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Followers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Following</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">可能性</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-card">
+            <div class="section">
+                <h3 class="section-title">🛠 技术栈</h3>
+                <div class="tech-stack">
+                    <span class="tech-item">Python</span>
+                    <span class="tech-item">JavaScript</span>
+                    <span class="tech-item">TypeScript</span>
+                    <span class="tech-item">Node.js</span>
+                    <span class="tech-item">Three.js</span>
+                    <span class="tech-item">React</span>
+                    <span class="tech-item">Vue</span>
+                    <span class="tech-item">Docker</span>
+                    <span class="tech-item">Kubernetes</span>
+                    <span class="tech-item">Git</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-card">
+            <div class="section">
+                <h3 class="section-title">🔗 快速链接</h3>
+                <div class="links">
+                    <a class="link-item" href="https://github.com/openshane/IndustrialSim" target="_blank">
+                        <span class="link-icon">🏭</span>
+                        <span>IndustrialSim - 工业硬件仿真平台</span>
+                    </a>
+                    <a class="link-item" href="https://github.com/openshane" target="_blank">
+                        <span class="link-icon">📁</span>
+                        <span>我的 GitHub 主页</span>
+                    </a>
+                    <a class="link-item" href="mailto:xieshuai.china@gmail.com">
+                        <span class="link-icon">📧</span>
+                        <span>联系我</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-card">
+            <div class="section">
+                <h3 class="section-title">💬 关于我</h3>
+                <p style="color: rgba(255,255,255,0.7); line-height: 1.8;">
+                    热爱技术，喜欢折腾各种有趣的项目。
+                    正在学习 AI 和硬件相关的知识，
+                    希望能够创造出有价值的工具和产品。
+                    欢迎交流合作！<br><br>
+                    🎯 座右铭：代码改变世界
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="receipt-container" id="receipt-container">
+        <div class="receipt" id="receipt">
+            <div class="receipt-header">
+                <div class="receipt-title">🧾 RECEIPT</div>
+                <div class="receipt-subtitle">Welcome to my world!</div>
+            </div>
+            <div class="receipt-items">
+                <div class="receipt-item">
+                    <span>Curiosity</span>
+                    <span>100%</span>
+                </div>
+                <div class="receipt-item">
+                    <span>Passion</span>
+                    <span>100%</span>
+                </div>
+                <div class="receipt-item">
+                    <span>Creativity</span>
+                    <span>100%</span>
+                </div>
+                <div class="receipt-item">
+                    <span>Coffee ☕</span>
+                    <span>∞</span>
+                </div>
+            </div>
+            <div class="receipt-total">
+                <div class="receipt-item">
+                    <span>TOTAL</span>
+                    <span>Priceless</span>
+                </div>
+            </div>
+            <div class="receipt-footer">
+                Thank you for visiting!<br>
+                Pull to interact 🎁
+            </div>
+        </div>
+    </div>
+    
+    <div class="mouse-hint">👆 拖动右侧小票看看</div>
+
+    <script>
+        // Three.js 背景动画
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+        
+        // 创建粒子
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 500;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 10;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        const material = new THREE.PointsMaterial({
+            size: 0.02,
+            color: 0x4ecdc4,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, material);
+        scene.add(particlesMesh);
+        
+        camera.position.z = 3;
+        
+        // 鼠标交互
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+        
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+        
+        // 接收小票交互 - Verlet 物理模拟
+        const receipt = document.getElementById('receipt');
+        const containerReceipt = document.getElementById('receipt-container');
+        
+        let isDragging = false;
+        let startX, startY;
+        let velocityY = 0;
+        let rotation = 0;
+        let offsetY = 0;
+        
+        const damping = 0.98;
+        const gravity = 0.5;
+        
+        containerReceipt.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            velocityY = 0;
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaY = e.clientY - startY;
+                offsetY = deltaY;
+                rotation = deltaY * 0.01;
+                receipt.style.transform = `translateY(${offsetY}px) rotate(${rotation}deg)`;
+            }
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                velocityY = offsetY * 0.1;
+                animateReceipt();
+            }
+        });
+        
+        function animateReceipt() {
+            if (Math.abs(velocityY) > 0.1 || Math.abs(offsetY) > 1 || Math.abs(rotation) > 0.01) {
+                velocityY *= damping;
+                velocityY += gravity * 0.1;
+                offsetY += velocityY;
+                rotation *= damping;
+                rotation += velocityY * 0.005;
+                
+                receipt.style.transform = `translateY(${offsetY}px) rotate(${rotation}deg)`;
+                
+                requestAnimationFrame(animateReceipt);
+            } else {
+                // 复位动画
+                const startOffset = offsetY;
+                const startRot = rotation;
+                const startTime = Date.now();
+                const duration = 500;
+                
+                function easeOutElastic(t) {
+                    const c4 = (2 * Math.PI) / 3;
+                    return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+                }
+                
+                function reset() {
+                    const elapsed = Date.now() - startTime;
+                    const t = Math.min(elapsed / duration, 1);
+                    const eased = easeOutElastic(t);
+                    
+                    offsetY = startOffset * (1 - eased);
+                    rotation = startRot * (1 - eased);
+                    
+                    receipt.style.transform = `translateY(${offsetY}px) rotate(${rotation}deg)`;
+                    
+                    if (t < 1) {
+                        requestAnimationFrame(reset);
+                    }
+                }
+                
+                reset();
+            }
+        }
+        
+        // 窗口大小改变
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            targetX = mouseX * 0.5;
+            targetY = mouseY * 0.5;
+            
+            particlesMesh.rotation.y += 0.001;
+            particlesMesh.rotation.x += 0.0005;
+            
+            camera.position.x += (targetX - camera.position.x) * 0.05;
+            camera.position.y += (targetY - camera.position.y) * 0.05;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>
