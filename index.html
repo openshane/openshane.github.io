@@ -16,7 +16,8 @@
       --light: #f8f9fa;
       --panel: rgba(255, 255, 255, 0.08);
       --panel-border: rgba(255, 255, 255, 0.18);
-      --muted: rgba(248, 249, 250, 0.72);
+      --muted: rgba(248, 249, 250, 0.82);
+      --muted-soft: rgba(248, 249, 250, 0.68);
       --shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
     }
 
@@ -105,6 +106,73 @@
       max-width: 680px;
     }
 
+    .hero-description {
+      color: var(--muted-soft);
+      font-size: 1rem;
+      line-height: 1.9;
+      max-width: 700px;
+      margin-top: 10px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 24px 0 10px;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .cta-button.primary {
+      color: #0f1b2d;
+      background: linear-gradient(135deg, #ffe66d, #ffd166);
+      box-shadow: 0 10px 24px rgba(255, 230, 109, 0.24);
+    }
+
+    .cta-button.secondary {
+      color: var(--light);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+
+    .cta-button.ghost {
+      color: var(--muted);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .cta-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .cta-button.primary:hover {
+      box-shadow: 0 14px 32px rgba(255, 230, 109, 0.32);
+    }
+
+    .cta-button.secondary:hover,
+    .cta-button.ghost:hover {
+      border-color: rgba(255,230,109,0.45);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .section-lead {
+      color: var(--muted-soft);
+      font-size: 0.94rem;
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
     .tags {
       display: flex;
       flex-wrap: wrap;
@@ -115,10 +183,10 @@
     .tag {
       padding: 8px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
       font-size: 0.92rem;
-      color: #fff;
+      color: rgba(255,255,255,0.92);
     }
 
     .stat-row,
@@ -182,20 +250,38 @@
     }
 
     .quick-links a {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
       text-decoration: none;
       color: var(--light);
-      padding: 14px 16px;
+      padding: 16px 18px;
       border-radius: 16px;
       background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.12);
-      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+      font-weight: 600;
+    }
+
+    .quick-link-meta {
+      color: var(--muted-soft);
+      font-size: 0.88rem;
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    .quick-link-arrow {
+      color: var(--accent);
+      font-size: 1rem;
+      flex-shrink: 0;
     }
 
     .quick-links a:hover {
       transform: translateY(-2px);
       border-color: rgba(255,230,109,0.45);
       background: rgba(255,255,255,0.11);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
     }
 
     .about-box {
@@ -216,11 +302,12 @@
       align-items: flex-end;
       gap: 12px;
       min-height: 720px;
+      opacity: 0.94;
     }
 
     .receipt-caption {
       text-align: right;
-      color: rgba(255,255,255,0.72);
+      color: rgba(255,255,255,0.8);
       max-width: 360px;
       padding: 8px 4px 0;
     }
@@ -229,20 +316,20 @@
       font-family: 'Fira Code', monospace;
       font-size: 0.78rem;
       letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.46);
+      color: rgba(255,255,255,0.58);
       text-transform: uppercase;
       margin-bottom: 8px;
     }
 
     .receipt-caption h2 {
-      font-size: 1.35rem;
+      font-size: 1.22rem;
       margin-bottom: 8px;
     }
 
     .receipt-caption p {
       font-size: 0.94rem;
       line-height: 1.75;
-      color: rgba(255,255,255,0.66);
+      color: rgba(255,255,255,0.72);
     }
 
     #receipt-wrap {
@@ -291,6 +378,8 @@
         top: auto;
         min-height: auto;
         align-items: center;
+        order: 2;
+        margin-top: 8px;
       }
       .receipt-caption, .receipt-tip {
         text-align: center;
@@ -304,9 +393,30 @@
     @media (max-width: 720px) {
       .page-shell { padding: 18px 14px 24px; }
       .hero-card { padding: 22px; }
+      .hero-top {
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .hero-actions {
+        flex-direction: column;
+      }
+      .cta-button {
+        width: 100%;
+      }
       .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .title-block h1 { font-size: 2rem; }
-      #receipt-wrap { height: 600px; }
+      .section-title { margin-bottom: 10px; }
+      .quick-links a {
+        padding: 14px 16px;
+      }
+      #receipt-wrap { height: 480px; }
+      .receipt-caption {
+        max-width: 100%;
+      }
+      .footer-note {
+        font-size: 0.72rem;
+        color: rgba(255,255,255,0.58);
+      }
     }
   </style>
 </head>
@@ -318,8 +428,15 @@
           <img class="avatar" src="https://avatars.githubusercontent.com/u/112454509?v=4" alt="openshane avatar">
           <div class="title-block">
             <h1>Hi, I'm openshane 👋</h1>
-            <p class="subtitle">🚀 全栈开发者 | 🎯 技术爱好者 | 💡 永远在学习路上</p>
+            <p class="subtitle">🚀 全栈开发者 · AI 与硬件探索者 · 持续构建有趣且有用的项目</p>
+            <p class="hero-description">我专注于 Web、自动化、AI/ML 和工业硬件相关方向，喜欢把灵感做成可运行、可展示、可分享的作品。这里是我的个人主页，也是我的实验场。</p>
           </div>
+        </div>
+
+        <div class="hero-actions">
+          <a class="cta-button primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">查看项目 ↗</a>
+          <a class="cta-button secondary" href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">GitHub 主页 ↗</a>
+          <a class="cta-button ghost" href="mailto:xieshuai.china@gmail.com">联系我</a>
         </div>
 
         <div class="tags">
@@ -359,10 +476,29 @@
 
         <section class="link-list">
           <h3 class="section-title">▸ 🔗 快速链接</h3>
+          <p class="section-lead">如果你第一次来，建议先看项目，再看 GitHub，最后通过邮箱联系我。</p>
           <div class="quick-links">
-            <a href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">🏭 IndustrialSim - 工业硬件仿真平台</a>
-            <a href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">📁 我的 GitHub 主页</a>
-            <a href="mailto:xieshuai.china@gmail.com">📧 联系我</a>
+            <a href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">
+              <span>
+                <span>🏭 IndustrialSim - 工业硬件仿真平台</span>
+                <span class="quick-link-meta">当前最核心的开源项目，聚焦工业硬件设备仿真。</span>
+              </span>
+              <span class="quick-link-arrow">↗</span>
+            </a>
+            <a href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">
+              <span>
+                <span>📁 我的 GitHub 主页</span>
+                <span class="quick-link-meta">查看仓库、代码实验和后续更新。</span>
+              </span>
+              <span class="quick-link-arrow">↗</span>
+            </a>
+            <a href="mailto:xieshuai.china@gmail.com">
+              <span>
+                <span>📧 联系我</span>
+                <span class="quick-link-meta">欢迎交流合作、项目沟通或技术讨论。</span>
+              </span>
+              <span class="quick-link-arrow">→</span>
+            </a>
           </div>
         </section>
 
@@ -376,11 +512,11 @@
       <aside class="receipt-side">
         <div class="receipt-caption">
           <div class="eyebrow">interactive receipt</div>
-          <h2>右上方悬挂的小票</h2>
-          <p>结合原始 receipt-physics 的纸张拖拽形变效果，并把你的个人介绍写进小票内容里。你可以直接拖拽小票观察弹性与阴影变化。</p>
+          <h2>互动小票实验</h2>
+          <p>这是我把 Three.js 物理纸张效果做成个人主页组件的一次实验。它是页面亮点之一，但核心信息仍然在左侧内容区。</p>
         </div>
         <div id="receipt-wrap" aria-label="physics receipt"></div>
-        <div class="receipt-tip">拖拽角落可整体拉动 · 拖拽纸面可局部形变</div>
+        <div class="receipt-tip">桌面端更适合拖拽体验 · 移动端默认降低交互负担</div>
       </aside>
     </div>
 
@@ -389,13 +525,16 @@
 
   <script>
     const wrap = document.getElementById('receipt-wrap');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobileViewport = window.matchMedia('(max-width: 720px)').matches;
+    const enableInteractiveReceipt = !prefersReducedMotion && !isMobileViewport;
 
     const COLS = 16;
     const ROWS = 32;
     const SPACING = 0.1;
-    const ITERS = 20;
-    const GRAVITY = 0.0065;
-    const DAMPING = 0.979;
+    const ITERS = enableInteractiveReceipt ? 20 : 12;
+    const GRAVITY = enableInteractiveReceipt ? 0.0065 : 0.0032;
+    const DAMPING = enableInteractiveReceipt ? 0.979 : 0.992;
     const W = (COLS - 1) * SPACING;
     const H = (ROWS - 1) * SPACING;
     const N = COLS * ROWS;
@@ -517,7 +656,7 @@
     }
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, enableInteractiveReceipt ? 2 : 1.25));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputEncoding = THREE.sRGBEncoding;
@@ -823,21 +962,25 @@
     }
 
     const canvas = renderer.domElement;
-    canvas.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
-    canvas.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
-    canvas.addEventListener('mouseup', onUp);
-    canvas.addEventListener('mouseleave', onUp);
-    canvas.addEventListener('touchstart', e => {
-      e.preventDefault();
-      const t = e.touches[0];
-      onDown(t.clientX, t.clientY);
-    }, { passive: false });
-    canvas.addEventListener('touchmove', e => {
-      e.preventDefault();
-      const t = e.touches[0];
-      onMove(t.clientX, t.clientY);
-    }, { passive: false });
-    canvas.addEventListener('touchend', onUp);
+    canvas.style.cursor = enableInteractiveReceipt ? 'grab' : 'default';
+
+    if (enableInteractiveReceipt) {
+      canvas.addEventListener('mousedown', e => onDown(e.clientX, e.clientY));
+      canvas.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
+      canvas.addEventListener('mouseup', onUp);
+      canvas.addEventListener('mouseleave', onUp);
+      canvas.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const t = e.touches[0];
+        onDown(t.clientX, t.clientY);
+      }, { passive: false });
+      canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+        const t = e.touches[0];
+        onMove(t.clientX, t.clientY);
+      }, { passive: false });
+      canvas.addEventListener('touchend', onUp);
+    }
     window.addEventListener('resize', resize);
 
     initParticles();
@@ -853,12 +996,17 @@
 
     resize();
     const clock = new THREE.Clock();
+    let settledFrames = 0;
     function animate() {
       requestAnimationFrame(animate);
       const delta = Math.min(clock.getDelta(), 0.016);
-      if (delta > 0) {
+      if (enableInteractiveReceipt) {
+        if (delta > 0) {
+          stepPhysics();
+        }
+      } else if (settledFrames < 18) {
         stepPhysics();
-        stepPhysics();
+        settledFrames += 1;
       }
       syncGeo(geo);
       renderer.render(scene, camera);
