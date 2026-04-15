@@ -335,45 +335,58 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 12px;
-      min-height: 700px;
-      opacity: 0.9;
+      gap: 14px;
+      min-height: 640px;
+      opacity: 0.96;
+    }
+
+    .receipt-showcase {
+      width: min(360px, 100%);
+      padding: 16px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(28, 39, 70, 0.82), rgba(45, 58, 103, 0.68) 42%, rgba(244, 224, 183, 0.16) 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 22px 48px rgba(2, 7, 22, 0.34);
+      backdrop-filter: blur(18px);
     }
 
     .receipt-caption {
       text-align: left;
-      color: rgba(255,255,255,0.82);
-      max-width: 360px;
-      padding: 8px 4px 0;
+      color: rgba(244, 247, 255, 0.9);
+      max-width: 320px;
+      padding: 4px 4px 0;
     }
 
     .receipt-caption .eyebrow {
       font-family: 'Fira Code', monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.1em;
-      color: rgba(255,255,255,0.58);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      color: rgba(188, 209, 255, 0.68);
       text-transform: uppercase;
       margin-bottom: 8px;
     }
 
     .receipt-caption h2 {
-      font-size: 1.22rem;
-      margin-bottom: 8px;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #fff6df;
     }
 
     .receipt-caption p {
-      font-size: 0.97rem;
-      line-height: 1.82;
-      color: rgba(255,255,255,0.74);
+      font-size: 0.98rem;
+      line-height: 1.78;
+      color: rgba(233, 240, 255, 0.78);
     }
 
     #receipt-wrap {
-      width: min(388px, 100%);
-      height: 648px;
+      width: 100%;
+      height: 420px;
       position: relative;
-      border-radius: 26px;
+      border-radius: 22px;
       overflow: hidden;
-      background: transparent;
+      background: radial-gradient(circle at top, rgba(255, 247, 227, 0.96), rgba(235, 222, 196, 0.84) 38%, rgba(60, 74, 121, 0.3) 100%);
+      border: 1px solid rgba(255,245,219,0.42);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 12px 30px rgba(6, 12, 30, 0.22);
     }
 
     #receipt-wrap canvas {
@@ -388,10 +401,10 @@
     .receipt-tip {
       font-family: 'Fira Code', monospace;
       font-size: 0.76rem;
-      color: rgba(255,255,255,0.46);
+      color: rgba(255,255,255,0.5);
       letter-spacing: 0.08em;
-      text-align: right;
-      padding-right: 4px;
+      text-align: left;
+      padding: 0 2px;
     }
 
     .footer-note {
@@ -423,12 +436,15 @@
         order: 2;
         margin-top: 8px;
       }
+      .receipt-showcase {
+        width: min(400px, 92vw);
+      }
       .receipt-caption, .receipt-tip {
-        text-align: center;
+        text-align: left;
         padding-right: 0;
       }
       #receipt-wrap {
-        width: min(420px, 92vw);
+        width: 100%;
       }
     }
 
@@ -451,7 +467,7 @@
       .quick-links a {
         padding: 14px 16px;
       }
-      #receipt-wrap { height: 480px; }
+      #receipt-wrap { height: 330px; }
       .receipt-caption {
         max-width: 100%;
       }
@@ -558,13 +574,15 @@
       </main>
 
       <aside class="receipt-side">
-        <div class="receipt-caption">
-          <div class="eyebrow">interactive receipt</div>
-          <h2>互动小票实验</h2>
-          <p>这是我把 Three.js 物理纸张效果做成个人主页组件的一次实验。它是页面亮点之一，但核心信息仍然在左侧内容区。</p>
+        <div class="receipt-showcase">
+          <div class="receipt-caption">
+            <div class="eyebrow">interactive receipt</div>
+            <h2>互动小票实验</h2>
+            <p>把我的个人介绍压缩进一张更利落的小票里：暖纸质感 + 深蓝光晕，让信息在首屏里更完整、也更容易一眼看清。</p>
+          </div>
+          <div id="receipt-wrap" aria-label="physics receipt"></div>
+          <div class="receipt-tip">桌面端更适合拖拽体验 · 小票内容已按首屏可读性重新排版</div>
         </div>
-        <div id="receipt-wrap" aria-label="physics receipt"></div>
-        <div class="receipt-tip">桌面端更适合拖拽体验 · 移动端默认降低交互负担</div>
       </aside>
     </div>
 
@@ -578,11 +596,12 @@
     const enableInteractiveReceipt = !prefersReducedMotion && !isMobileViewport;
 
     const COLS = 16;
-    const ROWS = 32;
+    const ROWS = 20;
     const SPACING = 0.1;
     const ITERS = enableInteractiveReceipt ? 20 : 12;
     const GRAVITY = enableInteractiveReceipt ? 0.0065 : 0.0032;
     const DAMPING = enableInteractiveReceipt ? 0.979 : 0.992;
+    const RECEIPT_TEXTURE_HEIGHT = 700;
     const W = (COLS - 1) * SPACING;
     const H = (ROWS - 1) * SPACING;
     const N = COLS * ROWS;
@@ -715,14 +734,14 @@
 
     const wallMesh = new THREE.Mesh(
       new THREE.PlaneGeometry(20, 20),
-      new THREE.MeshLambertMaterial({ color: 0xd3ccc4, transparent: true, opacity: 0.92 })
+      new THREE.MeshLambertMaterial({ color: 0xdee7fb, transparent: true, opacity: 0.94 })
     );
     wallMesh.position.z = -0.45;
     wallMesh.receiveShadow = true;
     scene.add(wallMesh);
 
-    scene.add(new THREE.AmbientLight(0xfff8f0, 0.4));
-    const sun = new THREE.DirectionalLight(0xfff4e0, 0.95);
+    scene.add(new THREE.AmbientLight(0xf7f7ff, 0.52));
+    const sun = new THREE.DirectionalLight(0xfff1d4, 0.82);
     sun.position.set(-2.5, 5, 4);
     sun.castShadow = true;
     sun.shadow.mapSize.width = 2048;
@@ -736,64 +755,74 @@
     sun.shadow.radius = 10;
     sun.shadow.bias = -0.0005;
     scene.add(sun);
-    const fill = new THREE.DirectionalLight(0xd8e8ff, 0.24);
+    const fill = new THREE.DirectionalLight(0xc9dcff, 0.3);
     fill.position.set(3, -1, 2);
     scene.add(fill);
 
     function buildTexture() {
-      const TW = 512, TH = 1420;
+      const TW = 512, TH = 700;
       const cv = document.createElement('canvas');
       cv.width = TW; cv.height = TH;
       const ctx = cv.getContext('2d');
 
-      ctx.fillStyle = '#faf8f3';
+      const paperGrad = ctx.createLinearGradient(0, 0, 0, TH);
+      paperGrad.addColorStop(0, '#fffef9');
+      paperGrad.addColorStop(0.5, '#f8f4ea');
+      paperGrad.addColorStop(1, '#efe8d8');
+      ctx.fillStyle = paperGrad;
       ctx.fillRect(0, 0, TW, TH);
+
       for (let y = 0; y < TH; y += 2) {
-        ctx.fillStyle = `rgba(0,0,0,${0.006 + Math.random() * 0.004})`;
+        ctx.fillStyle = `rgba(34,42,68,${0.0033 + Math.random() * 0.0022})`;
         ctx.fillRect(0, y, TW, 1);
       }
-      for (let i = 0; i < 900; i++) {
-        ctx.fillStyle = `rgba(160,140,100,${Math.random() * 0.025 + 0.008})`;
-        ctx.fillRect(Math.random() * TW, Math.random() * TH, Math.random() * 5 + 1, 1);
+      for (let i = 0; i < 420; i++) {
+        ctx.fillStyle = `rgba(171,149,107,${Math.random() * 0.016 + 0.005})`;
+        ctx.fillRect(Math.random() * TW, Math.random() * TH, Math.random() * 3 + 1, 1);
       }
+
       const vL = ctx.createLinearGradient(0, 0, TW, 0);
-      vL.addColorStop(0, 'rgba(0,0,0,0.08)');
-      vL.addColorStop(0.07, 'rgba(0,0,0,0)');
-      vL.addColorStop(0.93, 'rgba(0,0,0,0)');
-      vL.addColorStop(1, 'rgba(0,0,0,0.08)');
+      vL.addColorStop(0, 'rgba(34,41,71,0.06)');
+      vL.addColorStop(0.07, 'rgba(34,41,71,0)');
+      vL.addColorStop(0.93, 'rgba(34,41,71,0)');
+      vL.addColorStop(1, 'rgba(34,41,71,0.06)');
       ctx.fillStyle = vL;
       ctx.fillRect(0, 0, TW, TH);
-      ctx.fillStyle = '#e0dbd2';
-      ctx.fillRect(0, 0, TW, 28);
-      ctx.fillStyle = '#faf8f3';
+
+      const topBand = ctx.createLinearGradient(0, 0, TW, 0);
+      topBand.addColorStop(0, '#dfe8ff');
+      topBand.addColorStop(1, '#fff0cc');
+      ctx.fillStyle = topBand;
+      ctx.fillRect(0, 0, TW, 34);
+      ctx.fillStyle = '#fffaf0';
       for (let x = 18; x < TW - 14; x += 14) {
         ctx.beginPath();
-        ctx.arc(x, 14, 5.5, 0, Math.PI * 2);
+        ctx.arc(x, 17, 5.5, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      const C = (t, y, sz, col = '#1c1a18', w = 'normal') => {
+      const C = (t, y, sz, col = '#1b1f34', w = 'normal') => {
         ctx.font = `${w} ${sz}px "Courier New", monospace`;
         ctx.fillStyle = col;
         ctx.textAlign = 'center';
         ctx.fillText(t, TW / 2, y);
       };
-      const L = (t, y, sz, col = '#1c1a18') => {
-        ctx.font = `normal ${sz}px "Courier New", monospace`;
+      const L = (t, y, sz, col = '#1b1f34', w = 'normal') => {
+        ctx.font = `${w} ${sz}px "Courier New", monospace`;
         ctx.fillStyle = col;
         ctx.textAlign = 'left';
         ctx.fillText(t, 34, y);
       };
-      const R = (t, y, sz, col = '#1c1a18') => {
-        ctx.font = `normal ${sz}px "Courier New", monospace`;
+      const R = (t, y, sz, col = '#1b1f34', w = 'normal') => {
+        ctx.font = `${w} ${sz}px "Courier New", monospace`;
         ctx.fillStyle = col;
         ctx.textAlign = 'right';
         ctx.fillText(t, TW - 34, y);
       };
       const HR = y => {
-        ctx.strokeStyle = '#bbb';
+        ctx.strokeStyle = 'rgba(89,96,122,0.42)';
         ctx.lineWidth = 1;
-        ctx.setLineDash([4, 4]);
+        ctx.setLineDash([5, 4]);
         ctx.beginPath();
         ctx.moveTo(34, y);
         ctx.lineTo(TW - 34, y);
@@ -801,67 +830,52 @@
         ctx.setLineDash([]);
       };
       const THICK = y => {
-        ctx.strokeStyle = '#888';
-        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = 'rgba(45,54,86,0.72)';
+        ctx.lineWidth = 1.7;
         ctx.beginPath();
         ctx.moveTo(34, y);
         ctx.lineTo(TW - 34, y);
         ctx.stroke();
       };
 
-      let cy = 58;
-      C('OPENSHANE', cy, 28, '#111', 'bold'); cy += 30;
-      C('P E R S O N A L  R E C E I P T', cy, 15, '#333', 'bold'); cy += 22;
-      C('Welcome to my world! 👋', cy, 11, '#888'); cy += 18;
-      THICK(cy); cy += 14;
-      C('Full Stack Developer · Builder · Learner', cy, 11, '#666'); cy += 16;
-      C('GitHub: openshane', cy, 11, '#666'); cy += 16;
-      C('Email: xieshuai.china@gmail.com', cy, 11, '#666'); cy += 14;
-      HR(cy); cy += 14;
-      C('QTY   DESCRIPTION              VALUE', cy, 10, '#aaa'); cy += 18;
-      HR(cy); cy += 14;
+      let cy = 74;
+      C('OPENSHANE', cy, 38, '#141a2f', 'bold'); cy += 38;
+      C('PROFILE / SNAPSHOT', cy, 20, '#4f5973', 'bold'); cy += 30;
+      C('专注 AI、Web 与工业硬件的全栈开发者', cy, 22, '#5d6781', 'bold'); cy += 28;
+      THICK(cy); cy += 24;
 
-      const items = [
-        ['x∞', 'Curiosity', '100%'],
-        ['x∞', 'Passion', '100%'],
-        ['x1', 'IndustrialSim', 'Active'],
-        ['x1', 'Python', 'Core'],
-        ['x1', 'Web / Frontend', 'Strong'],
-        ['x1', 'AI / ML', 'Learning'],
-        ['x1', 'Hardware', 'Exploring'],
-        ['x1', 'Three.js', 'Fun'],
-        ['x∞', 'Coffee ☕', 'Needed'],
-        ['x∞', 'Ideas', 'Priceless']
-      ];
+      C('你好，我是 openshane', cy, 32, '#1a1f34', 'bold'); cy += 42;
+      C('让项目既能跑起来，也能被看见', cy, 20, '#4f5973', 'bold'); cy += 28;
+      C('持续做能落地、能展示、能分享的作品', cy, 18, '#5f6982'); cy += 24;
+      HR(cy); cy += 24;
 
-      for (const [qty, name, price] of items) {
-        ctx.font = 'normal 12px "Courier New", monospace';
-        ctx.fillStyle = '#666';
-        ctx.textAlign = 'left';
-        ctx.fillText(qty, 34, cy);
-        ctx.fillStyle = '#1c1a18';
-        ctx.fillText(name.length > 22 ? name.slice(0, 22) + '…' : name, 88, cy);
-        R(price, cy, 12);
-        cy += 25;
-      }
+      L('当前定位', cy, 18, '#66708b', 'bold');
+      R('Builder / Maker', cy, 18, '#23304d', 'bold'); cy += 28;
+      L('• AI 应用、Web 产品与自动化工程', cy, 18, '#1f2439'); cy += 30;
+      L('• 工业硬件模拟与交互式项目表达', cy, 18, '#1f2439'); cy += 30;
 
-      HR(cy); cy += 15;
-      L('MOTTO', cy, 12, '#666'); R('代码改变世界', cy, 12, '#111'); cy += 20;
-      L('STATUS', cy, 12, '#666'); R('BUILDING...', cy, 12, '#ff6b6b'); cy += 20;
-      THICK(cy); cy += 16;
-      L('TOTAL', cy, 15, '#555'); R('PRICELESS', cy, 15, '#111'); cy += 22;
-      HR(cy); cy += 18;
-      C('THANK YOU FOR YOUR VISIT', cy, 13, '#555'); cy += 18;
-      C('KEEP CODING · KEEP CREATING', cy, 13, '#555'); cy += 22;
-      C('openshane.github.io', cy, 11, '#999'); cy += 16;
-      C('Pull to interact 🎁', cy, 11, '#bbb'); cy += 30;
+      HR(cy); cy += 24;
+      L('代表项目', cy, 18, '#66708b', 'bold');
+      R('IndustrialSim', cy, 20, '#1b1f34', 'bold'); cy += 28;
+      C('工业硬件设备仿真平台', cy, 19, '#1f2439', 'bold'); cy += 24;
+      C('Modbus / OPC-UA · 持续开发中', cy, 17, '#4f5973'); cy += 28;
 
-      const bx = 50, bw = TW - 100, bh = 52;
+      HR(cy); cy += 24;
+      L('联系与主页', cy, 18, '#66708b', 'bold');
+      R('GitHub / Email', cy, 18, '#43506f', 'bold'); cy += 28;
+      C('github.com/openshane', cy, 18, '#1f2439'); cy += 24;
+      C('xieshuai.china@gmail.com', cy, 17, '#1f2439'); cy += 26;
+
+      THICK(cy); cy += 22;
+      C('KEEP CODING · KEEP CREATING', cy, 20, '#36405d', 'bold'); cy += 22;
+      C('openshane.github.io', cy, 15, '#7b8498'); cy += 22;
+
+      const bx = 84, bw = TW - 168, bh = 36;
       let bp = bx;
-      ctx.fillStyle = '#111';
+      ctx.fillStyle = '#1a1f34';
       while (bp < bx + bw) {
-        const bw2 = Math.random() > 0.6 ? 3 : (Math.random() > 0.5 ? 2 : 1);
-        if (Math.random() > 0.35) ctx.fillRect(bp, cy, bw2, bh);
+        const bw2 = Math.random() > 0.62 ? 3 : (Math.random() > 0.5 ? 2 : 1);
+        if (Math.random() > 0.4) ctx.fillRect(bp, cy, bw2, bh);
         bp += bw2 + (Math.random() > 0.5 ? 1 : 0);
       }
 
