@@ -13,11 +13,12 @@
         canvas { display: block; cursor: grab; }
         canvas:active { cursor: grabbing; }
         
-        /* 左上角个人介绍 */
+        /* 右上角个人介绍 */
         #profile-info {
             position: fixed;
             top: 20px;
-            left: 20px;
+            right: 20px;
+            left: auto;
             z-index: 100;
             font-family: 'Courier New', monospace;
             color: #555;
@@ -81,8 +82,8 @@ const W = (COLS - 1) * SPACING;
 const H = (ROWS - 1) * SPACING;
 const N = COLS * ROWS;
 
-// Two corner anchors — only top-left and top-right pinned
-let anchorX = 0, anchorY = 0.18;
+// Two corner anchors — only top-right pinned (right side fixed)
+let anchorX = 1.0, anchorY = 0.55;
 
 const pos    = new Float64Array(N * 3);
 const prev   = new Float64Array(N * 3);
@@ -94,12 +95,14 @@ function initParticles() {
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const i = pidx(r, c);
-      const x = anchorX + (c / (COLS - 1) - 0.5) * W;
+      // 右侧悬挂：从右边开始
+      const x = anchorX - (c / (COLS - 1)) * W;
       const y = anchorY - (r / (ROWS - 1)) * H;
       const arch = Math.sin(Math.PI * c / (COLS-1)) * 0.03 * (r / (ROWS-1));
       pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=arch;
       prev[i*3]=x; prev[i*3+1]=y; prev[i*3+2]=arch*0.97;
-      pinned[i] = (r === 0) ? 1 : 0;
+      // 只有第一列（最右边）固定
+      pinned[i] = (c === 0) ? 1 : 0;
     }
   }
 }
@@ -121,12 +124,13 @@ function buildConstraints() {
   }
 }
 
-function pinTopRow() {
-  for (let c = 0; c < COLS; c++) {
-    const b = pidx(0,c)*3;
-    const x = anchorX + (c/(COLS-1) - 0.5)*W;
-    pos[b]=x; pos[b+1]=anchorY; pos[b+2]=0;
-    prev[b]=x; prev[b+1]=anchorY; prev[b+2]=0;
+function pinRightColumn() {
+  for (let r = 0; r < ROWS; r++) {
+    const b = pidx(r, 0)*3;
+    const x = anchorX;
+    const y = anchorY - (r / (ROWS - 1)) * H;
+    pos[b]=x; pos[b+1]=y; pos[b+2]=0;
+    prev[b]=x; prev[b+1]=y; prev[b+2]=0;
   }
 }
 
@@ -145,13 +149,14 @@ function stepPhysics() {
     if(pos[b+2] < 0) {
       pos[b+2] *= 0.3; // strong damped bounce back
       prev[b+2] = pos[b+2]; // kill negative z velocity
-    } else {
-      pos[b+2] += (0 - pos[b+2]) * 0.018; // gentle pull back to flat when positive
+} else {
+      pos[b+2] += (0 - pos[b+2]) * 0.018;
     }
     const maxZ=SPACING*3.5;
     if(pos[b+2]>maxZ) pos[b+2]=maxZ;
   }
-  pinTopRow();
+  // Step through physics
+  pinRightColumn();
   const len=constraints.length;
   for(let iter=0;iter<ITERS;iter++){
     for(let k=0;k<len;k+=4){
@@ -166,7 +171,7 @@ function stepPhysics() {
       else if(!pa){pos[a]+=dx*diff;pos[a+1]+=dy*diff;pos[a+2]+=dz*diff;}
       else if(!pb){pos[b]-=dx*diff;pos[b+1]-=dy*diff;pos[b+2]-=dz*diff;}
     }
-    pinTopRow();
+    pinRightColumn();
   }
   // Hard z>=0 clamp after ALL constraint solving — constraints can push z negative, fix it here
   for(let i=0;i<N;i++){
@@ -189,8 +194,8 @@ scene.background = new THREE.Color(0xb0aba3);
 
 const camY = anchorY - H * 0.38;
 const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.01, 50);
-camera.position.set(0, camY, 4.2);
-camera.lookAt(0, camY, 0);
+camera.position.set(0.9, camY, 4.2);
+camera.lookAt(0.9, camY, 0);
 
 // Wall for receiving shadow
 const wallMesh = new THREE.Mesh(
