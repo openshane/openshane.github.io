@@ -3,31 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>openshane - 欢迎来到我的世界</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <title>Interactive Receipt - Three.js Physics</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap');
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
         
-        :root {
-            --primary: #ff6b6b;
-            --secondary: #4ecdc4;
-            --accent: #ffe66d;
-            --dark: #2d3436;
-            --light: #f8f9fa;
-        }
-        
         body {
-            font-family: 'Noto Sans SC', sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: var(--light);
-            overflow-x: hidden;
+            background: #f5f5f0;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
         }
         
         #canvas-container {
@@ -36,572 +23,466 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
         }
         
-        .content {
-            position: relative;
-            z-index: 10;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .profile-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 40px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        .avatar-container {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .avatar {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid var(--primary);
-            box-shadow: 0 0 30px rgba(255, 107, 107, 0.4);
-            animation: float 3s ease-in-out infinite;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .bio {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-        
-        .badges {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .badge {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .badge:hover {
-            transform: scale(1.05);
-            background: var(--primary);
-        }
-        
-        .section {
-            margin-top: 30px;
-        }
-        
-        .section-title {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .section-title::before {
-            content: '▸';
-            color: var(--primary);
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .stat-card {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent);
-            font-family: 'Fira Code', monospace;
-        }
-        
-        .stat-label {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 5px;
-        }
-        
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .tech-item {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(78, 205, 196, 0.2));
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-        
-        .tech-item:hover {
-            transform: rotate(5deg) scale(1.05);
-        }
-        
-        .links {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .link-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            text-decoration: none;
-            color: var(--light);
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-        }
-        
-        .link-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary);
-            transform: translateX(10px);
-        }
-        
-        .link-icon {
-            font-size: 1.5rem;
-        }
-        
-        .receipt-container {
+        .hint {
             position: fixed;
             bottom: 30px;
-            right: 30px;
-            cursor: grab;
-            z-index: 100;
-        }
-        
-        .receipt {
-            width: 280px;
-            background: #f5f5f0;
-            border-radius: 4px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-            padding: 20px;
-            font-family: 'Fira Code', monospace;
-            color: #333;
-            transform-origin: top center;
-            user-select: none;
-        }
-        
-        .receipt:active {
-            cursor: grabbing;
-        }
-        
-        .receipt-header {
-            text-align: center;
-            border-bottom: 2px dashed #333;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .receipt-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-        
-        .receipt-subtitle {
-            font-size: 0.7rem;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .receipt-items {
-            font-size: 0.75rem;
-            line-height: 1.8;
-        }
-        
-        .receipt-item {
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .receipt-total {
-            border-top: 2px dashed #333;
-            margin-top: 15px;
-            padding-top: 15px;
-            font-weight: 700;
-        }
-        
-        .receipt-footer {
-            text-align: center;
-            font-size: 0.6rem;
-            color: #999;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px dashed #ccc;
-        }
-        
-        .mouse-hint {
-            position: fixed;
-            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-        
-        @media (max-width: 600px) {
-            .content {
-                padding: 20px 15px;
-            }
-            
-            .profile-card {
-                padding: 25px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .receipt-container {
-                display: none;
-            }
+            color: #666;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
     <div id="canvas-container"></div>
+    <div class="hint">👆 用鼠标抓取小票</div>
     
-    <div class="content">
-        <div class="profile-card">
-            <div class="avatar-container">
-                <img class="avatar" src="https://avatars.githubusercontent.com/u/112454509?v=4" alt="avatar">
-            </div>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+    
+    <script type="module">
+        import * as THREE from 'three';
+        
+        // ==================== VERLET PHYSICS ====================
+        
+        class VerletPoint {
+            constructor(x, y, z, pinned = false) {
+                this.position = new THREE.Vector3(x, y, z);
+                this.oldPosition = new THREE.Vector3(x, y, z);
+                this.acceleration = new THREE.Vector3(0, 0, 0);
+                this.pinned = pinned;
+                this.mass = 1;
+            }
             
-            <h1>Hi, I'm openshane 👋</h1>
-            <p class="bio">🚀 全栈开发者 | 🎯 技术爱好者 | 💡 永远在学习路上</p>
+            update(deltaTime, damping = 0.98) {
+                if (this.pinned) return;
+                
+                const velocity = this.position.clone().sub(this.oldPosition);
+                velocity.multiplyScalar(damping);
+                
+                this.oldPosition.copy(this.position);
+                this.position.add(velocity);
+                this.position.add(this.acceleration.multiplyScalar(deltaTime * deltaTime));
+                
+                this.acceleration.set(0, 0, 0);
+            }
             
-            <div class="badges">
-                <span class="badge">🔧 Python</span>
-                <span class="badge">🌐 Web</span>
-                <span class="badge">🤖 AI/ML</span>
-                <span class="badge">🔌 硬件</span>
-                <span class="badge">📱 移动端</span>
-            </div>
-        </div>
-        
-        <div class="profile-card">
-            <div class="section">
-                <h3 class="section-title">📊 我的数据</h3>
-                <div class="stats-grid">
-                    <div class="stat-card" onclick="window.open('https://github.com/openshane', '_blank')">
-                        <div class="stat-number">2</div>
-                        <div class="stat-label">仓库</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Followers</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Following</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">∞</div>
-                        <div class="stat-label">可能性</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="profile-card">
-            <div class="section">
-                <h3 class="section-title">🛠 技术栈</h3>
-                <div class="tech-stack">
-                    <span class="tech-item">Python</span>
-                    <span class="tech-item">JavaScript</span>
-                    <span class="tech-item">TypeScript</span>
-                    <span class="tech-item">Node.js</span>
-                    <span class="tech-item">Three.js</span>
-                    <span class="tech-item">React</span>
-                    <span class="tech-item">Vue</span>
-                    <span class="tech-item">Docker</span>
-                    <span class="tech-item">Kubernetes</span>
-                    <span class="tech-item">Git</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="profile-card">
-            <div class="section">
-                <h3 class="section-title">🔗 快速链接</h3>
-                <div class="links">
-                    <a class="link-item" href="https://github.com/openshane/IndustrialSim" target="_blank">
-                        <span class="link-icon">🏭</span>
-                        <span>IndustrialSim - 工业硬件仿真平台</span>
-                    </a>
-                    <a class="link-item" href="https://github.com/openshane" target="_blank">
-                        <span class="link-icon">📁</span>
-                        <span>我的 GitHub 主页</span>
-                    </a>
-                    <a class="link-item" href="mailto:xieshuai.china@gmail.com">
-                        <span class="link-icon">📧</span>
-                        <span>联系我</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <div class="profile-card">
-            <div class="section">
-                <h3 class="section-title">💬 关于我</h3>
-                <p style="color: rgba(255,255,255,0.7); line-height: 1.8;">
-                    热爱技术，喜欢折腾各种有趣的项目。
-                    正在学习 AI 和硬件相关的知识，
-                    希望能够创造出有价值的工具和产品。
-                    欢迎交流合作！<br><br>
-                    🎯 座右铭：代码改变世界
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="receipt-container" id="receipt-container">
-        <div class="receipt" id="receipt">
-            <div class="receipt-header">
-                <div class="receipt-title">🧾 RECEIPT</div>
-                <div class="receipt-subtitle">Welcome to my world!</div>
-            </div>
-            <div class="receipt-items">
-                <div class="receipt-item">
-                    <span>Curiosity</span>
-                    <span>100%</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Passion</span>
-                    <span>100%</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Creativity</span>
-                    <span>100%</span>
-                </div>
-                <div class="receipt-item">
-                    <span>Coffee ☕</span>
-                    <span>∞</span>
-                </div>
-            </div>
-            <div class="receipt-total">
-                <div class="receipt-item">
-                    <span>TOTAL</span>
-                    <span>Priceless</span>
-                </div>
-            </div>
-            <div class="receipt-footer">
-                Thank you for visiting!<br>
-                Pull to interact 🎁
-            </div>
-        </div>
-    </div>
-    
-    <div class="mouse-hint">👆 拖动右侧小票看看</div>
-
-    <script>
-        // Three.js 背景动画
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
-        
-        // 创建粒子
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particlesCount = 500;
-        const posArray = new Float32Array(particlesCount * 3);
-        
-        for(let i = 0; i < particlesCount * 3; i++) {
-            posArray[i] = (Math.random() - 0.5) * 10;
+            applyForce(force) {
+                if (this.pinned) return;
+                this.acceleration.add(force.clone().divideScalar(this.mass));
+            }
         }
         
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        
-        const material = new THREE.PointsMaterial({
-            size: 0.02,
-            color: 0x4ecdc4,
-            transparent: true,
-            opacity: 0.8
-        });
-        
-        const particlesMesh = new THREE.Points(particlesGeometry, material);
-        scene.add(particlesMesh);
-        
-        camera.position.z = 3;
-        
-        // 鼠标交互
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-        
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-        });
-        
-        // 接收小票交互 - Verlet 物理模拟
-        const receipt = document.getElementById('receipt');
-        const containerReceipt = document.getElementById('receipt-container');
-        
-        let isDragging = false;
-        let startX, startY;
-        let velocityY = 0;
-        let rotation = 0;
-        let offsetY = 0;
-        
-        const damping = 0.98;
-        const gravity = 0.5;
-        
-        containerReceipt.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            velocityY = 0;
-        });
-        
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging) {
-                const deltaY = e.clientY - startY;
-                offsetY = deltaY;
-                rotation = deltaY * 0.01;
-                receipt.style.transform = `translateY(${offsetY}px) rotate(${rotation}deg)`;
+        class VerletConstraint {
+            constructor(p1, p2, restLength = null) {
+                this.p1 = p1;
+                this.p2 = p2;
+                this.restLength = restLength || p1.position.distanceTo(p2.position);
+                this.stiffness = 1.0;
             }
-        });
-        
-        document.addEventListener('mouseup', () => {
-            if (isDragging) {
-                isDragging = false;
-                velocityY = offsetY * 0.1;
-                animateReceipt();
+            
+            solve() {
+                const diff = this.p2.position.clone().sub(this.p1.position);
+                const distance = diff.length();
+                const difference = (this.restLength - distance) / distance;
+                
+                const correction = diff.multiplyScalar(difference * 0.5 * this.stiffness);
+                
+                if (!this.p1.pinned) {
+                    this.p1.position.sub(correction);
+                }
+                if (!this.p2.pinned) {
+                    this.p2.position.add(correction);
+                }
             }
-        });
+        }
         
-        function animateReceipt() {
-            if (Math.abs(velocityY) > 0.1 || Math.abs(offsetY) > 1 || Math.abs(rotation) > 0.01) {
-                velocityY *= damping;
-                velocityY += gravity * 0.1;
-                offsetY += velocityY;
-                rotation *= damping;
-                rotation += velocityY * 0.005;
+        class Cloth {
+            constructor(width, height, segmentsX, segmentsY) {
+                this.width = width;
+                this.height = height;
+                this.segmentsX = segmentsX;
+                this.segmentsY = segmentsY;
                 
-                receipt.style.transform = `translateY(${offsetY}px) rotate(${rotation}deg)`;
+                this.points = [];
+                this.constraints = [];
                 
-                requestAnimationFrame(animateReceipt);
-            } else {
-                // 复位动画
-                const startOffset = offsetY;
-                const startRot = rotation;
-                const startTime = Date.now();
-                const duration = 500;
+                this.createPoints();
+                this.createConstraints();
+            }
+            
+            createPoints() {
+                const spacingX = this.width / this.segmentsX;
+                const spacingY = this.height / this.segmentsY;
                 
-                function easeOutElastic(t) {
-                    const c4 = (2 * Math.PI) / 3;
-                    return t === 0 ? 0 : t === 1 ? 1 : Math.pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+                for (let y = 0; y <= this.segmentsY; y++) {
+                    for (let x = 0; x <= this.segmentsX; x++) {
+                        const px = (x - this.segmentsX / 2) * spacingX;
+                        const py = (this.segmentsY / 2 - y) * spacingY;
+                        const pz = 0;
+                        
+                        // 顶部整行固定
+                        const pinned = (y === 0);
+                        this.points.push(new VerletPoint(px, py, pz, pinned));
+                    }
+                }
+            }
+            
+            createConstraints() {
+                const cols = this.segmentsX + 1;
+                
+                for (let y = 0; y <= this.segmentsY; y++) {
+                    for (let x = 0; x <= this.segmentsX; x++) {
+                        const idx = y * cols + x;
+                        
+                        // 结构约束 - 水平
+                        if (x < this.segmentsX) {
+                            this.constraints.push(new VerletConstraint(
+                                this.points[idx],
+                                this.points[idx + 1]
+                            ));
+                        }
+                        
+                        // 结构约束 - 垂直
+                        if (y < this.segmentsY) {
+                            this.constraints.push(new VerletConstraint(
+                                this.points[idx],
+                                this.points[idx + cols]
+                            ));
+                        }
+                        
+                        // 剪切约束 - 对角线（增加稳定性）
+                        if (x < this.segmentsX && y < this.segmentsY) {
+                            this.constraints.push(new VerletConstraint(
+                                this.points[idx],
+                                this.points[idx + cols + 1],
+                                Math.sqrt(2) * (this.width / this.segmentsX)
+                            ));
+                            this.constraints.push(new VerletConstraint(
+                                this.points[idx + 1],
+                                this.points[idx + cols],
+                                Math.sqrt(2) * (this.width / this.segmentsX)
+                            ));
+                        }
+                    }
+                }
+            }
+            
+            update(deltaTime, iterations = 5) {
+                // 应用重力
+                const gravity = new THREE.Vector3(0, -9.8, 0);
+                for (const point of this.points) {
+                    point.applyForce(gravity);
                 }
                 
-                function reset() {
-                    const elapsed = Date.now() - startTime;
-                    const t = Math.min(elapsed / duration, 1);
-                    const eased = easeOutElastic(t);
-                    
-                    offsetY = startOffset * (1 - eased);
-                    rotation = startRot * (1 - eased);
-                    
-                    receipt.style.transform = `translateY(${offsetY}px) rotate(${rotation}deg)`;
-                    
-                    if (t < 1) {
-                        requestAnimationFrame(reset);
+                // 更新点
+                for (const point of this.points) {
+                    point.update(deltaTime, 0.99);
+                }
+                
+                // 求解约束
+                for (let i = 0; i < iterations; i++) {
+                    for (const constraint of this.constraints) {
+                        constraint.solve();
+                    }
+                }
+            }
+            
+            getPositions() {
+                return this.points.map(p => p.position.clone());
+            }
+        }
+        
+        // ==================== THREE.JS SETUP ====================
+        
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf5f5f0);
+        
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 0, 15);
+        
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+        
+        // 灯光
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 10, 10);
+        scene.add(directionalLight);
+        
+        const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+        backLight.position.set(-5, -5, -10);
+        scene.add(backLight);
+        
+        // ==================== RECEIPT MESH ====================
+        
+        const receiptWidth = 3.5;
+        const receiptHeight = 8;
+        const segmentsX = 20;
+        const segmentsY = 40;
+        
+        const cloth = new Cloth(receiptWidth, receiptHeight, segmentsX, segmentsY);
+        
+        // 创建几何体
+        const geometry = new THREE.PlaneGeometry(
+            receiptWidth, 
+            receiptHeight, 
+            segmentsX, 
+            segmentsY
+        );
+        
+        // 热敏纸材质
+        const material = new THREE.MeshStandardMaterial({
+            color: 0xf8f8f0,
+            roughness: 0.8,
+            metalness: 0.0,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.95
+        });
+        
+        const receiptMesh = new THREE.Mesh(geometry, material);
+        scene.add(receiptMesh);
+        
+        // 打印内容（使用 canvas 纹理）
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+        
+        // 绘制小票内容
+        ctx.fillStyle = '#f8f8f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = '#333';
+        ctx.font = 'bold 36px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillText('🧾 RECEIPT', 256, 60);
+        
+        ctx.font = '20px Courier New';
+        ctx.fillStyle = '#666';
+        ctx.fillText('Welcome to my world!', 256, 95);
+        
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(40, 120);
+        ctx.lineTo(472, 120);
+        ctx.stroke();
+        
+        // 购物清单 - 搞笑 3D 图形术语
+        const items = [
+            ['Vertex Buffer', '∞'],
+            ['Fragment Shader', '100%'],
+            ['Normal Map', '2KB'],
+            ['Ambient Occlusion', 'ON'],
+            ['Ray Marching', '50次'],
+            ['Gaussian Blur', '5px'],
+            ['Depth Buffer', '24bit'],
+            ['Mipmap Level', 'LOD3'],
+            ['Backface Culling', 'ON'],
+            ['Z-Buffer Test', 'PASS'],
+            ['Alpha Blend', '50%'],
+            ['Specular Highlight', '高光'],
+            ['Fresnel Effect', '反射'],
+            ['Tone Mapping', 'ACES'],
+            ['Anti-Aliasing', 'MSAA8x']
+        ];
+        
+        ctx.setLineDash([]);
+        ctx.font = '24px Courier New';
+        
+        items.forEach((item, i) => {
+            const y = 160 + i * 45;
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'left';
+            ctx.fillText(item[0], 50, y);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#666';
+            ctx.fillText(item[1], 462, y);
+            
+            if (i < items.length - 1) {
+                ctx.strokeStyle = '#ddd';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(40, y + 15);
+                ctx.lineTo(472, y + 15);
+                ctx.stroke();
+            }
+        });
+        
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(40, 920);
+        ctx.lineTo(472, 920);
+        ctx.stroke();
+        
+        ctx.setLineDash([]);
+        ctx.font = 'bold 28px Courier New';
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#333';
+        ctx.fillText('TOTAL', 50, 960);
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#ff6b6b';
+        ctx.fillText('Priceless', 462, 960);
+        
+        ctx.font = '18px Courier New';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#999';
+        ctx.fillText('Thank you for visiting!', 256, 1010);
+        
+        // 创建纹理
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        
+        const printMaterial = new THREE.MeshStandardMaterial({
+            map: texture,
+            roughness: 0.7,
+            metalness: 0.0,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.98
+        });
+        
+        receiptMesh.material = printMaterial;
+        
+        // ==================== INTERACTION ====================
+        
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let selectedPoint = null;
+        let isDragging = false;
+        
+        function onMouseDown(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            raycaster.setFromCamera(mouse, camera);
+            
+            const intersects = raycaster.intersectObject(receiptMesh);
+            
+            if (intersects.length > 0) {
+                const point = intersects[0].point;
+                
+                // 找到最近的未固定点
+                let minDist = Infinity;
+                let nearest = null;
+                
+                for (const p of cloth.points) {
+                    if (p.pinned) continue;
+                    const dist = p.position.distanceTo(point);
+                    if (dist < minDist && dist < 1) {
+                        minDist = dist;
+                        nearest = p;
                     }
                 }
                 
-                reset();
+                if (nearest) {
+                    selectedPoint = nearest;
+                    isDragging = true;
+                }
             }
         }
         
-        // 窗口大小改变
+        function onMouseMove(event) {
+            if (!isDragging || !selectedPoint) return;
+            
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+            
+            // 将鼠标位置投射到 3D 空间
+            const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+            vector.unproject(camera);
+            
+            const dir = vector.sub(camera.position).normalize();
+            const distance = -camera.position.z / dir.z;
+            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
+            
+            // 限制拖动范围
+            pos.x = Math.max(-5, Math.min(5, pos.x));
+            pos.y = Math.max(-8, Math.min(8, pos.y));
+            
+            selectedPoint.position.copy(pos);
+            selectedPoint.oldPosition.copy(pos);
+        }
+        
+        function onMouseUp() {
+            isDragging = false;
+            selectedPoint = null;
+        }
+        
+        window.addEventListener('mousedown', onMouseDown);
+        window.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+        
+        // 触摸支持
+        window.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            onMouseDown({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+        });
+        
+        window.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            onMouseMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
+        });
+        
+        window.addEventListener('touchend', onMouseUp);
+        
+        // ==================== UPDATE GEOMETRY ====================
+        
+        function updateGeometry() {
+            const positions = geometry.attributes.position;
+            
+            for (let i = 0; i < cloth.points.length; i++) {
+                const point = cloth.points[i];
+                positions.setXYZ(i, point.position.x, point.position.y, point.position.z);
+            }
+            
+            positions.needsUpdate = true;
+            geometry.computeVertexNormals();
+        }
+        
+        // ==================== ANIMATION ====================
+        
+        const clock = new THREE.Clock();
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const delta = Math.min(clock.getDelta(), 0.02);
+            
+            // 更新物理
+            cloth.update(delta, 8);
+            
+            // 更新几何体
+            updateGeometry();
+            
+            renderer.render(scene, camera);
+        }
+        
+        // ==================== RESIZE ====================
+        
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        // 动画循环
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            targetX = mouseX * 0.5;
-            targetY = mouseY * 0.5;
-            
-            particlesMesh.rotation.y += 0.001;
-            particlesMesh.rotation.x += 0.0005;
-            
-            camera.position.x += (targetX - camera.position.x) * 0.05;
-            camera.position.y += (targetY - camera.position.y) * 0.05;
-            
-            renderer.render(scene, camera);
-        }
         
         animate();
     </script>
