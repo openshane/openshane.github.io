@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Receipt - Three.js Physics</title>
+    <title>openshane - 欢迎来到我的世界</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -12,9 +16,11 @@
         }
         
         body {
-            background: #f5f5f0;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #f8f9fa;
             overflow: hidden;
-            font-family: 'Courier New', monospace;
+            font-family: 'Noto Sans SC', sans-serif;
         }
         
         #canvas-container {
@@ -23,6 +29,106 @@
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 0;
+        }
+        
+        /* 物理小票容器 - 左上方 */
+        #physics-receipt-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            cursor: grab;
+        }
+        
+        #physics-receipt-container:active {
+            cursor: grabbing;
+        }
+        
+        #physics-receipt-container canvas {
+            display: block;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
+        }
+        
+        .receipt-hint {
+            position: fixed;
+            top: 20px;
+            left: 220px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            font-family: 'Courier New', monospace;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        /* 个人介绍卡片 */
+        .profile-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            pointer-events: none;
+        }
+        
+        .profile-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px 40px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            pointer-events: auto;
+            max-width: 360px;
+        }
+        
+        .profile-card h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #ffe66d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .profile-card .bio {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+        
+        .profile-card .tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .profile-card .tag {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .profile-card .links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .profile-card .links a {
+            color: #4ecdc4;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        
+        .profile-card .links a:hover {
+            color: #ffe66d;
         }
         
         .hint {
@@ -30,7 +136,7 @@
             bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            color: #666;
+            color: rgba(255,255,255,0.5);
             font-size: 14px;
             pointer-events: none;
             z-index: 100;
@@ -40,9 +146,28 @@
 </head>
 <body>
     <div id="canvas-container"></div>
-    <div class="hint">👆 用鼠标抓取小票</div>
+    <div id="physics-receipt-container"></div>
+    <div class="receipt-hint">👆 拖动小票</div>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <div class="profile-overlay">
+        <div class="profile-card">
+            <img src="https://avatars.githubusercontent.com/u/112454509?v=4" style="width:80px;height:80px;border-radius:50%;border:3px solid #ff6b6b;margin-bottom:15px;">
+            <h1>openshane 👋</h1>
+            <p class="bio">🚀 全栈开发者 | 技术爱好者 | 终身学习者</p>
+            <div class="tags">
+                <span class="tag">🔧 Python</span>
+                <span class="tag">🌐 Web</span>
+                <span class="tag">🤖 AI/ML</span>
+                <span class="tag">🎮 Three.js</span>
+            </div>
+            <div class="links">
+                <a href="https://github.com/openshane" target="_blank">GitHub</a>
+                <a href="mailto:xieshuai.china@gmail.com">Email</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hint">👆 用鼠标抓取左上角小票</div>
     
     <script>
         // ==================== VERLET PHYSICS ====================
@@ -123,7 +248,6 @@
                         const py = (this.segmentsY / 2 - y) * spacingY;
                         const pz = 0;
                         
-                        // 顶部整行固定
                         const pinned = (y === 0);
                         this.points.push(new VerletPoint(px, py, pz, pinned));
                     }
@@ -137,7 +261,6 @@
                     for (let x = 0; x <= this.segmentsX; x++) {
                         const idx = y * cols + x;
                         
-                        // 结构约束 - 水平
                         if (x < this.segmentsX) {
                             this.constraints.push(new VerletConstraint(
                                 this.points[idx],
@@ -145,7 +268,6 @@
                             ));
                         }
                         
-                        // 结构约束 - 垂直
                         if (y < this.segmentsY) {
                             this.constraints.push(new VerletConstraint(
                                 this.points[idx],
@@ -153,7 +275,6 @@
                             ));
                         }
                         
-                        // 剪切约束 - 对角线
                         if (x < this.segmentsX && y < this.segmentsY) {
                             const diagLength = Math.sqrt(2) * (this.width / this.segmentsX);
                             this.constraints.push(new VerletConstraint(
@@ -172,18 +293,15 @@
             }
             
             update(deltaTime, iterations) {
-                // 重力
                 const gravity = new THREE.Vector3(0, -15, 0);
                 for (const point of this.points) {
                     point.applyForce(gravity);
                 }
                 
-                // 更新点
                 for (const point of this.points) {
                     point.update(deltaTime, 0.98);
                 }
                 
-                // 约束迭代
                 for (let i = 0; i < iterations; i++) {
                     for (const constraint of this.constraints) {
                         constraint.solve();
@@ -196,7 +314,7 @@
         
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xf5f5f0);
+        scene.background = new THREE.Color(0x1a1a2e);
         
         const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.set(0, 0, 12);
@@ -206,7 +324,6 @@
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
         
-        // 灯光
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
         scene.add(ambientLight);
         
@@ -227,7 +344,6 @@
         
         const cloth = new Cloth(receiptWidth, receiptHeight, segmentsX, segmentsY);
         
-        // 创建几何体
         const geometry = new THREE.PlaneGeometry(
             receiptWidth, 
             receiptHeight, 
@@ -235,73 +351,66 @@
             segmentsY
         );
         
-        // 生成小票内容 Canvas
+        // 小票 Canvas 纹理 - 个人介绍版本
         const canvas = document.createElement('canvas');
         canvas.width = 512;
         canvas.height = 1024;
         const ctx = canvas.getContext('2d');
         
-        // 背景
         ctx.fillStyle = '#f8f8f0';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 标题
+        // 装饰纹理
+        for(let y=0;y<canvas.height;y+=2){
+            ctx.fillStyle=`rgba(0,0,0,${0.006+Math.random()*0.004})`;
+            ctx.fillRect(0,y,canvas.width,1);
+        }
+        
         ctx.fillStyle = '#333';
         ctx.font = 'bold 36px Courier New';
         ctx.textAlign = 'center';
-        ctx.fillText('🧾 RECEIPT', 256, 60);
+        ctx.fillText('OPENSHANE', 256, 55);
         
         ctx.font = '20px Courier New';
         ctx.fillStyle = '#666';
-        ctx.fillText('Welcome to my world!', 256, 95);
+        ctx.fillText('PERSONAL PROFILE', 256, 90);
+        ctx.fillText('Welcome! 👋', 256, 115);
         
-        // 分隔线
         ctx.strokeStyle = '#333';
         ctx.lineWidth = 2;
         ctx.setLineDash([8, 4]);
         ctx.beginPath();
-        ctx.moveTo(40, 120);
-        ctx.lineTo(472, 120);
+        ctx.moveTo(40, 140);
+        ctx.lineTo(472, 140);
         ctx.stroke();
         
-        // 购物清单 - 搞笑 3D 图形术语
+        // 个人介绍内容
+        ctx.setLineDash([]);
+        ctx.font = '18px Courier New';
+        ctx.fillStyle = '#333';
+        ctx.textAlign = 'left';
+        
         const items = [
-            ['Vertex Buffer', '∞'],
-            ['Fragment Shader', '100%'],
-            ['Normal Map', '2KB'],
-            ['Ambient Occlusion', 'ON'],
-            ['Ray Marching', '50次'],
-            ['Gaussian Blur', '5px'],
-            ['Depth Buffer', '24bit'],
-            ['Mipmap Level', 'LOD3'],
-            ['Backface Culling', 'ON'],
-            ['Z-Buffer Test', 'PASS'],
-            ['Alpha Blend', '50%'],
-            ['Specular Highlight', '高光'],
-            ['Fresnel Effect', '反射'],
-            ['Tone Mapping', 'ACES'],
-            ['Anti-Aliasing', 'MSAA8x']
+            ['Developer · Creator', '🚀'],
+            ['Full Stack Engineer', '💻'],
+            ['AI/ML Enthusiast', '🤖'],
+            ['Three.js Fan', '🎮'],
+            ['Coffee Addict', '☕'],
+            [' lifelong Learner', '📚'],
         ];
         
-        ctx.setLineDash([]);
-        ctx.font = '22px Courier New';
-        
         items.forEach((item, i) => {
-            const y = 155 + i * 42;
-            ctx.fillStyle = '#333';
-            ctx.textAlign = 'left';
-            ctx.fillText(item[0], 45, y);
-            ctx.textAlign = 'right';
+            const y = 175 + i * 50;
             ctx.fillStyle = '#666';
-            ctx.fillText(item[1], 467, y);
+            ctx.fillText(item[1] + ' ' + item[0], 45, y);
             
             if (i < items.length - 1) {
                 ctx.strokeStyle = '#e0e0e0';
                 ctx.lineWidth = 1;
                 ctx.setLineDash([3, 3]);
                 ctx.beginPath();
-                ctx.moveTo(40, y + 12);
-                ctx.lineTo(472, y + 12);
+                ctx.moveTo(40, y + 15);
+                ctx.lineTo(472, y + 15);
                 ctx.stroke();
                 ctx.setLineDash([]);
             }
@@ -310,28 +419,28 @@
         ctx.setLineDash([8, 4]);
         ctx.strokeStyle = '#333';
         ctx.beginPath();
-        ctx.moveTo(40, 890);
-        ctx.lineTo(472, 890);
+        ctx.moveTo(40, 520);
+        ctx.lineTo(472, 520);
         ctx.stroke();
         
         ctx.setLineDash([]);
-        ctx.font = 'bold 24px Courier New';
+        ctx.font = 'bold 22px Courier New';
         ctx.textAlign = 'left';
         ctx.fillStyle = '#333';
-        ctx.fillText('TOTAL', 45, 925);
+        ctx.fillText('TOTAL', 45, 555);
         ctx.textAlign = 'right';
         ctx.fillStyle = '#ff6b6b';
-        ctx.fillText('Priceless', 467, 925);
+        ctx.fillText('PRICELESS', 467, 555);
         
         ctx.font = '16px Courier New';
         ctx.textAlign = 'center';
         ctx.fillStyle = '#999';
-        ctx.fillText('Thank you for visiting!', 256, 980);
+        ctx.fillText('Thank you for visiting!', 256, 610);
+        ctx.fillText('Keep Coding! ✨', 256, 640);
+        ctx.fillText('openshane.github.io', 256, 680);
         
-        // 创建纹理
         const texture = new THREE.CanvasTexture(canvas);
         
-        // 材质
         const material = new THREE.MeshStandardMaterial({
             map: texture,
             roughness: 0.75,
@@ -362,7 +471,6 @@
             if (intersects.length > 0) {
                 const point = intersects[0].point;
                 
-                // 找最近的未固定点
                 let minDist = Infinity;
                 let nearest = null;
                 
@@ -388,7 +496,6 @@
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             
-            // 投影到 3D 空间
             const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
             vector.unproject(camera);
             
@@ -396,7 +503,6 @@
             const distance = -camera.position.z / dir.z;
             const pos = camera.position.clone().add(dir.multiplyScalar(distance));
             
-            // 限制范围
             pos.x = Math.max(-4, Math.min(4, pos.x));
             pos.y = Math.max(-6, Math.min(6, pos.y));
             
@@ -413,7 +519,6 @@
         window.addEventListener('mousemove', onMouseMove);
         window.addEventListener('mouseup', onMouseUp);
         
-        // 触摸支持
         window.addEventListener('touchstart', function(e) {
             if (e.touches.length > 0) {
                 onMouseDown({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
@@ -451,10 +556,8 @@
             
             const delta = Math.min(clock.getDelta(), 0.016);
             
-            // 物理更新
             cloth.update(delta, 8);
             
-            // 更新几何
             updateGeometry();
             
             renderer.render(scene, camera);
