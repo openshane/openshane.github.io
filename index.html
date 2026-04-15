@@ -168,7 +168,7 @@ function stepPhysics() {
       else if(!pa){pos[a]+=dx*diff;pos[a+1]+=dy*diff;pos[a+2]+=dz*diff;}
       else if(!pb){pos[b]-=dx*diff;pos[b+1]-=dy*diff;pos[b+2]-=dz*diff;}
     }
-    pinRightColumn();
+    pinTopRightCorner();
   }
   // Hard z>=0 clamp after ALL constraint solving — constraints can push z negative, fix it here
   for(let i=0;i<N;i++){
