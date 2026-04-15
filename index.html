@@ -194,8 +194,8 @@ scene.background = new THREE.Color(0xb0aba3);
 
 const camY = anchorY - H * 0.38;
 const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.01, 50);
-camera.position.set(0.9, camY, 4.2);
-camera.lookAt(0.9, camY, 0);
+camera.position.set(anchorX, camY, 4.2);
+camera.lookAt(anchorX, camY, 0);
 
 // Wall for receiving shadow
 const wallMesh = new THREE.Mesh(
