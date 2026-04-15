@@ -6,572 +6,357 @@
     <title>openshane - 欢迎来到我的世界</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #ddd8d0; overflow: hidden; }
+        canvas { display: block; cursor: grab; }
+        canvas:active { cursor: grabbing; }
         
-        body {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: #f8f9fa;
-            overflow: hidden;
-            font-family: 'Noto Sans SC', sans-serif;
-        }
-        
-        #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-        
-        /* 物理小票容器 - 左上方 */
-        #physics-receipt-container {
+        /* 左上角个人介绍 */
+        #profile-info {
             position: fixed;
             top: 20px;
             left: 20px;
             z-index: 100;
-            cursor: grab;
-        }
-        
-        #physics-receipt-container:active {
-            cursor: grabbing;
-        }
-        
-        #physics-receipt-container canvas {
-            display: block;
-            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.4));
-        }
-        
-        .receipt-hint {
-            position: fixed;
-            top: 20px;
-            left: 220px;
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.4);
             font-family: 'Courier New', monospace;
-            z-index: 100;
-            pointer-events: none;
-        }
-        
-        /* 个人介绍卡片 */
-        .profile-overlay {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 50;
-            pointer-events: none;
-        }
-        
-        .profile-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 30px 40px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            color: #555;
+            font-size: 11px;
+            line-height: 1.6;
             text-align: center;
-            pointer-events: auto;
-            max-width: 360px;
-        }
-        
-        .profile-card h1 {
-            font-size: 1.8rem;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #ffe66d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-        }
-        
-        .profile-card .bio {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.95rem;
-            margin-bottom: 15px;
-        }
-        
-        .profile-card .tags {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
-        .profile-card .tag {
-            padding: 6px 12px;
-            border-radius: 15px;
-            font-size: 0.75rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .profile-card .links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
-        
-        .profile-card .links a {
-            color: #4ecdc4;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-        
-        .profile-card .links a:hover {
-            color: #ffe66d;
-        }
-        
-        .hint {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255,255,255,0.5);
-            font-size: 14px;
             pointer-events: none;
-            z-index: 100;
-            font-family: sans-serif;
+        }
+        
+        #profile-info .name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        #profile-info .tags {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 8px;
+        }
+        
+        #profile-info .tag {
+            padding: 3px 8px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        
+        #hint {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            color: rgba(80,70,60,0.45); font: 11px/1 'Courier New', monospace;
+            letter-spacing: 0.12em; text-transform: uppercase; pointer-events: none;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
-    <div id="canvas-container"></div>
-    <div id="physics-receipt-container"></div>
-    <div class="receipt-hint">👆 拖动小票</div>
-    
-    <div class="profile-overlay">
-        <div class="profile-card">
-            <img src="https://avatars.githubusercontent.com/u/112454509?v=4" style="width:80px;height:80px;border-radius:50%;border:3px solid #ff6b6b;margin-bottom:15px;">
-            <h1>openshane 👋</h1>
-            <p class="bio">🚀 全栈开发者 | 技术爱好者 | 终身学习者</p>
-            <div class="tags">
-                <span class="tag">🔧 Python</span>
-                <span class="tag">🌐 Web</span>
-                <span class="tag">🤖 AI/ML</span>
-                <span class="tag">🎮 Three.js</span>
-            </div>
-            <div class="links">
-                <a href="https://github.com/openshane" target="_blank">GitHub</a>
-                <a href="mailto:xieshuai.china@gmail.com">Email</a>
-            </div>
+    <div id="profile-info">
+        <div class="name">openshane 👋</div>
+        <div>全栈开发者 | 技术爱好者</div>
+        <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">Web</span>
+            <span class="tag">AI/ML</span>
+            <span class="tag">Three.js</span>
         </div>
     </div>
-    
-    <div class="hint">👆 用鼠标抓取左上角小票</div>
-    
+    <div id="hint">Grab corners to move · Grab body to deform</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // ==================== VERLET PHYSICS ====================
-        
-        class VerletPoint {
-            constructor(x, y, z, pinned = false) {
-                this.position = new THREE.Vector3(x, y, z);
-                this.oldPosition = new THREE.Vector3(x, y, z);
-                this.acceleration = new THREE.Vector3(0, 0, 0);
-                this.pinned = pinned;
-                this.mass = 1;
-            }
-            
-            update(deltaTime, damping) {
-                if (this.pinned) return;
-                
-                const velocity = this.position.clone().sub(this.oldPosition);
-                velocity.multiplyScalar(damping);
-                
-                this.oldPosition.copy(this.position);
-                this.position.add(velocity);
-                this.position.add(this.acceleration.clone().multiplyScalar(deltaTime * deltaTime));
-                
-                this.acceleration.set(0, 0, 0);
-            }
-            
-            applyForce(force) {
-                if (this.pinned) return;
-                this.acceleration.add(force.clone().divideScalar(this.mass));
-            }
-        }
-        
-        class VerletConstraint {
-            constructor(p1, p2, restLength) {
-                this.p1 = p1;
-                this.p2 = p2;
-                this.restLength = restLength || p1.position.distanceTo(p2.position);
-                this.stiffness = 1.0;
-            }
-            
-            solve() {
-                const diff = this.p2.position.clone().sub(this.p1.position);
-                const distance = diff.length();
-                const difference = (this.restLength - distance) / distance;
-                
-                const correction = diff.multiplyScalar(difference * 0.5 * this.stiffness);
-                
-                if (!this.p1.pinned) {
-                    this.p1.position.sub(correction);
-                }
-                if (!this.p2.pinned) {
-                    this.p2.position.add(correction);
-                }
-            }
-        }
-        
-        class Cloth {
-            constructor(width, height, segmentsX, segmentsY) {
-                this.width = width;
-                this.height = height;
-                this.segmentsX = segmentsX;
-                this.segmentsY = segmentsY;
-                
-                this.points = [];
-                this.constraints = [];
-                
-                this.createPoints();
-                this.createConstraints();
-            }
-            
-            createPoints() {
-                const spacingX = this.width / this.segmentsX;
-                const spacingY = this.height / this.segmentsY;
-                
-                for (let y = 0; y <= this.segmentsY; y++) {
-                    for (let x = 0; x <= this.segmentsX; x++) {
-                        const px = (x - this.segmentsX / 2) * spacingX;
-                        const py = (this.segmentsY / 2 - y) * spacingY;
-                        const pz = 0;
-                        
-                        const pinned = (y === 0);
-                        this.points.push(new VerletPoint(px, py, pz, pinned));
-                    }
-                }
-            }
-            
-            createConstraints() {
-                const cols = this.segmentsX + 1;
-                
-                for (let y = 0; y <= this.segmentsY; y++) {
-                    for (let x = 0; x <= this.segmentsX; x++) {
-                        const idx = y * cols + x;
-                        
-                        if (x < this.segmentsX) {
-                            this.constraints.push(new VerletConstraint(
-                                this.points[idx],
-                                this.points[idx + 1]
-                            ));
-                        }
-                        
-                        if (y < this.segmentsY) {
-                            this.constraints.push(new VerletConstraint(
-                                this.points[idx],
-                                this.points[idx + cols]
-                            ));
-                        }
-                        
-                        if (x < this.segmentsX && y < this.segmentsY) {
-                            const diagLength = Math.sqrt(2) * (this.width / this.segmentsX);
-                            this.constraints.push(new VerletConstraint(
-                                this.points[idx],
-                                this.points[idx + cols + 1],
-                                diagLength
-                            ));
-                            this.constraints.push(new VerletConstraint(
-                                this.points[idx + 1],
-                                this.points[idx + cols],
-                                diagLength
-                            ));
-                        }
-                    }
-                }
-            }
-            
-            update(deltaTime, iterations) {
-                const gravity = new THREE.Vector3(0, -15, 0);
-                for (const point of this.points) {
-                    point.applyForce(gravity);
-                }
-                
-                for (const point of this.points) {
-                    point.update(deltaTime, 0.98);
-                }
-                
-                for (let i = 0; i < iterations; i++) {
-                    for (const constraint of this.constraints) {
-                        constraint.solve();
-                    }
-                }
-            }
-        }
-        
-        // ==================== THREE.JS SETUP ====================
-        
-        const container = document.getElementById('canvas-container');
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x1a1a2e);
-        
-        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0, 12);
-        
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-        
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-        
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        directionalLight.position.set(5, 10, 10);
-        scene.add(directionalLight);
-        
-        const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
-        backLight.position.set(-5, -5, -10);
-        scene.add(backLight);
-        
-        // ==================== RECEIPT MESH ====================
-        
-        const receiptWidth = 2.8;
-        const receiptHeight = 7;
-        const segmentsX = 15;
-        const segmentsY = 30;
-        
-        const cloth = new Cloth(receiptWidth, receiptHeight, segmentsX, segmentsY);
-        
-        const geometry = new THREE.PlaneGeometry(
-            receiptWidth, 
-            receiptHeight, 
-            segmentsX, 
-            segmentsY
-        );
-        
-        // 小票 Canvas 纹理 - 个人介绍版本
-        const canvas = document.createElement('canvas');
-        canvas.width = 512;
-        canvas.height = 1024;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.fillStyle = '#f8f8f0';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // 装饰纹理
-        for(let y=0;y<canvas.height;y+=2){
-            ctx.fillStyle=`rgba(0,0,0,${0.006+Math.random()*0.004})`;
-            ctx.fillRect(0,y,canvas.width,1);
-        }
-        
-        ctx.fillStyle = '#333';
-        ctx.font = 'bold 36px Courier New';
-        ctx.textAlign = 'center';
-        ctx.fillText('OPENSHANE', 256, 55);
-        
-        ctx.font = '20px Courier New';
-        ctx.fillStyle = '#666';
-        ctx.fillText('PERSONAL PROFILE', 256, 90);
-        ctx.fillText('Welcome! 👋', 256, 115);
-        
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([8, 4]);
-        ctx.beginPath();
-        ctx.moveTo(40, 140);
-        ctx.lineTo(472, 140);
-        ctx.stroke();
-        
-        // 个人介绍内容
-        ctx.setLineDash([]);
-        ctx.font = '18px Courier New';
-        ctx.fillStyle = '#333';
-        ctx.textAlign = 'left';
-        
-        const items = [
-            ['Developer · Creator', '🚀'],
-            ['Full Stack Engineer', '💻'],
-            ['AI/ML Enthusiast', '🤖'],
-            ['Three.js Fan', '🎮'],
-            ['Coffee Addict', '☕'],
-            [' lifelong Learner', '📚'],
-        ];
-        
-        items.forEach((item, i) => {
-            const y = 175 + i * 50;
-            ctx.fillStyle = '#666';
-            ctx.fillText(item[1] + ' ' + item[0], 45, y);
-            
-            if (i < items.length - 1) {
-                ctx.strokeStyle = '#e0e0e0';
-                ctx.lineWidth = 1;
-                ctx.setLineDash([3, 3]);
-                ctx.beginPath();
-                ctx.moveTo(40, y + 15);
-                ctx.lineTo(472, y + 15);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-        });
-        
-        ctx.setLineDash([8, 4]);
-        ctx.strokeStyle = '#333';
-        ctx.beginPath();
-        ctx.moveTo(40, 520);
-        ctx.lineTo(472, 520);
-        ctx.stroke();
-        
-        ctx.setLineDash([]);
-        ctx.font = 'bold 22px Courier New';
-        ctx.textAlign = 'left';
-        ctx.fillStyle = '#333';
-        ctx.fillText('TOTAL', 45, 555);
-        ctx.textAlign = 'right';
-        ctx.fillStyle = '#ff6b6b';
-        ctx.fillText('PRICELESS', 467, 555);
-        
-        ctx.font = '16px Courier New';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = '#999';
-        ctx.fillText('Thank you for visiting!', 256, 610);
-        ctx.fillText('Keep Coding! ✨', 256, 640);
-        ctx.fillText('openshane.github.io', 256, 680);
-        
-        const texture = new THREE.CanvasTexture(canvas);
-        
-        const material = new THREE.MeshStandardMaterial({
-            map: texture,
-            roughness: 0.75,
-            metalness: 0.0,
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.98
-        });
-        
-        const receiptMesh = new THREE.Mesh(geometry, material);
-        scene.add(receiptMesh);
-        
-        // ==================== INTERACTION ====================
-        
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        let selectedPoint = null;
-        let isDragging = false;
-        
-        function onMouseDown(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            
-            raycaster.setFromCamera(mouse, camera);
-            
-            const intersects = raycaster.intersectObject(receiptMesh);
-            
-            if (intersects.length > 0) {
-                const point = intersects[0].point;
-                
-                let minDist = Infinity;
-                let nearest = null;
-                
-                for (const p of cloth.points) {
-                    if (p.pinned) continue;
-                    const dist = p.position.distanceTo(point);
-                    if (dist < minDist && dist < 0.8) {
-                        minDist = dist;
-                        nearest = p;
-                    }
-                }
-                
-                if (nearest) {
-                    selectedPoint = nearest;
-                    isDragging = true;
-                }
-            }
-        }
-        
-        function onMouseMove(event) {
-            if (!isDragging || !selectedPoint) return;
-            
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            
-            const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-            vector.unproject(camera);
-            
-            const dir = vector.sub(camera.position).normalize();
-            const distance = -camera.position.z / dir.z;
-            const pos = camera.position.clone().add(dir.multiplyScalar(distance));
-            
-            pos.x = Math.max(-4, Math.min(4, pos.x));
-            pos.y = Math.max(-6, Math.min(6, pos.y));
-            
-            selectedPoint.position.copy(pos);
-            selectedPoint.oldPosition.copy(pos);
-        }
-        
-        function onMouseUp() {
-            isDragging = false;
-            selectedPoint = null;
-        }
-        
-        window.addEventListener('mousedown', onMouseDown);
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
-        
-        window.addEventListener('touchstart', function(e) {
-            if (e.touches.length > 0) {
-                onMouseDown({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
-            }
-        }, { passive: false });
-        
-        window.addEventListener('touchmove', function(e) {
-            if (e.touches.length > 0) {
-                onMouseMove({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY });
-            }
-        }, { passive: false });
-        
-        window.addEventListener('touchend', onMouseUp);
-        
-        // ==================== UPDATE GEOMETRY ====================
-        
-        function updateGeometry() {
-            const positions = geometry.attributes.position;
-            
-            for (let i = 0; i < cloth.points.length; i++) {
-                const point = cloth.points[i];
-                positions.setXYZ(i, point.position.x, point.position.y, point.position.z);
-            }
-            
-            positions.needsUpdate = true;
-            geometry.computeVertexNormals();
-        }
-        
-        // ==================== ANIMATION ====================
-        
-        const clock = new THREE.Clock();
-        
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            const delta = Math.min(clock.getDelta(), 0.016);
-            
-            cloth.update(delta, 8);
-            
-            updateGeometry();
-            
-            renderer.render(scene, camera);
-        }
-        
-        // ==================== RESIZE ====================
-        
-        window.addEventListener('resize', function() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        animate();
+// ─── CONFIG ──────────────────────────────────────────────────────────────────
+const COLS    = 16;
+const ROWS    = 32;
+const SPACING = 0.10;
+const ITERS   = 20;
+const GRAVITY = 0.0065;
+const DAMPING = 0.979;
+const W = (COLS - 1) * SPACING;
+const H = (ROWS - 1) * SPACING;
+const N = COLS * ROWS;
+
+// Two corner anchors — only top-left and top-right pinned
+let anchorX = 0, anchorY = 0.18;
+
+const pos    = new Float64Array(N * 3);
+const prev   = new Float64Array(N * 3);
+const pinned = new Uint8Array(N);
+
+function pidx(r, c) { return r * COLS + c; }
+
+function initParticles() {
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const i = pidx(r, c);
+      const x = anchorX + (c / (COLS - 1) - 0.5) * W;
+      const y = anchorY - (r / (ROWS - 1)) * H;
+      const arch = Math.sin(Math.PI * c / (COLS-1)) * 0.03 * (r / (ROWS-1));
+      pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=arch;
+      prev[i*3]=x; prev[i*3+1]=y; prev[i*3+2]=arch*0.97;
+      pinned[i] = (r === 0) ? 1 : 0;
+    }
+  }
+}
+
+const constraints = [];
+function buildConstraints() {
+  constraints.length = 0;
+  function push(a, b, rest, s) { constraints.push(a, b, rest, s); }
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const i = pidx(r, c);
+      if (c < COLS-1) push(i, pidx(r,   c+1), SPACING,             0.13);
+      if (r < ROWS-1) push(i, pidx(r+1, c),   SPACING,             0.13);
+      if (r < ROWS-1 && c < COLS-1) push(i, pidx(r+1,c+1), SPACING*Math.SQRT2, 0.07);
+      if (r < ROWS-1 && c > 0)      push(i, pidx(r+1,c-1), SPACING*Math.SQRT2, 0.07);
+      if (c < COLS-2) push(i, pidx(r,   c+2), SPACING*2, 0.03);
+      if (r < ROWS-2) push(i, pidx(r+2, c),   SPACING*2, 0.03);
+    }
+  }
+}
+
+function pinTopRow() {
+  for (let c = 0; c < COLS; c++) {
+    const b = pidx(0,c)*3;
+    const x = anchorX + (c/(COLS-1) - 0.5)*W;
+    pos[b]=x; pos[b+1]=anchorY; pos[b+2]=0;
+    prev[b]=x; prev[b+1]=anchorY; prev[b+2]=0;
+  }
+}
+
+function stepPhysics() {
+  for (let i = 0; i < N; i++) {
+    if (pinned[i]) continue;
+    const b = i*3;
+    let vx=(pos[b]-prev[b])*DAMPING;
+    let vy=(pos[b+1]-prev[b+1])*DAMPING;
+    let vz=(pos[b+2]-prev[b+2])*DAMPING;
+    const maxV=SPACING*0.20, spd=Math.sqrt(vx*vx+vy*vy+vz*vz);
+    if(spd>maxV){const s=maxV/spd;vx*=s;vy*=s;vz*=s;}
+    prev[b]=pos[b]; prev[b+1]=pos[b+1]; prev[b+2]=pos[b+2];
+    pos[b]+=vx; pos[b+1]+=vy-GRAVITY; pos[b+2]+=vz;
+    // z=0 is a hard floor: deformation only goes toward camera (+z)
+    if(pos[b+2] < 0) {
+      pos[b+2] *= 0.3; // strong damped bounce back
+      prev[b+2] = pos[b+2]; // kill negative z velocity
+    } else {
+      pos[b+2] += (0 - pos[b+2]) * 0.018; // gentle pull back to flat when positive
+    }
+    const maxZ=SPACING*3.5;
+    if(pos[b+2]>maxZ) pos[b+2]=maxZ;
+  }
+  pinTopRow();
+  const len=constraints.length;
+  for(let iter=0;iter<ITERS;iter++){
+    for(let k=0;k<len;k+=4){
+      const ia=constraints[k],ib=constraints[k+1];
+      const rest=constraints[k+2],stiff=constraints[k+3];
+      const a=ia*3,b=ib*3;
+      const dx=pos[b]-pos[a],dy=pos[b+1]-pos[a+1],dz=pos[b+2]-pos[a+2];
+      const dist=Math.sqrt(dx*dx+dy*dy+dz*dz)||1e-6;
+      const diff=(dist-rest)/dist*stiff;
+      const pa=pinned[ia],pb=pinned[ib];
+      if(!pa&&!pb){const h=diff*0.5;pos[a]+=dx*h;pos[a+1]+=dy*h;pos[a+2]+=dz*h;pos[b]-=dx*h;pos[b+1]-=dy*h;pos[b+2]-=dz*h;}
+      else if(!pa){pos[a]+=dx*diff;pos[a+1]+=dy*diff;pos[a+2]+=dz*diff;}
+      else if(!pb){pos[b]-=dx*diff;pos[b+1]-=dy*diff;pos[b+2]-=dz*diff;}
+    }
+    pinTopRow();
+  }
+  // Hard z>=0 clamp after ALL constraint solving — constraints can push z negative, fix it here
+  for(let i=0;i<N;i++){
+    if(pinned[i]) continue;
+    if(pos[i*3+2]<0){ pos[i*3+2]=0; prev[i*3+2]=0; }
+  }
+}
+
+// ─── THREE.JS ────────────────────────────────────────────────────────────────
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputEncoding = THREE.sRGBEncoding;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xb0aba3);
+
+const camY = anchorY - H * 0.38;
+const camera = new THREE.PerspectiveCamera(38, innerWidth/innerHeight, 0.01, 50);
+camera.position.set(0, camY, 4.2);
+camera.lookAt(0, camY, 0);
+
+// Wall for receiving shadow
+const wallMesh = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshLambertMaterial({ color: 0xb0aba3 })
+);
+wallMesh.position.z = -0.45;
+wallMesh.receiveShadow = true;
+scene.add(wallMesh);
+
+// Lighting
+scene.add(new THREE.AmbientLight(0xfff8f0, 0.35));
+const sun = new THREE.DirectionalLight(0xfff4e0, 0.9);
+sun.position.set(-2.5, 5, 4);
+sun.castShadow = true;
+sun.shadow.mapSize.width = sun.shadow.mapSize.height = 2048;
+sun.shadow.camera.near=0.1; sun.shadow.camera.far=20;
+sun.shadow.camera.left=-3; sun.shadow.camera.right=3;
+sun.shadow.camera.top=4; sun.shadow.camera.bottom=-4;
+sun.shadow.radius=10; sun.shadow.bias=-0.0005;
+scene.add(sun);
+const fill=new THREE.DirectionalLight(0xd8e8ff,0.28);
+fill.position.set(3,-1,2); scene.add(fill);
+
+// ─── TEXTURE ─────────────────────────────────────────────────────────────────
+function buildTexture() {
+  const TW=512, TH=1500;
+  const cv=document.createElement('canvas'); cv.width=TW; cv.height=TH;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#faf8f3'; ctx.fillRect(0,0,TW,TH);
+  for(let y=0;y<TH;y+=2){ctx.fillStyle=`rgba(0,0,0,${0.006+Math.random()*0.004})`;ctx.fillRect(0,y,TW,1);}
+  for(let i=0;i<900;i++){ctx.fillStyle=`rgba(160,140,100,${Math.random()*0.025+0.008})`;ctx.fillRect(Math.random()*TW,Math.random()*TH,Math.random()*5+1,1);}
+  const vL=ctx.createLinearGradient(0,0,TW,0);
+  vL.addColorStop(0,'rgba(0,0,0,0.08)');vL.addColorStop(0.07,'rgba(0,0,0,0)');
+  vL.addColorStop(0.93,'rgba(0,0,0,0)');vL.addColorStop(1,'rgba(0,0,0,0.08)');
+  ctx.fillStyle=vL;ctx.fillRect(0,0,TW,TH);
+  ctx.fillStyle='#e0dbd2';ctx.fillRect(0,0,TW,28);
+  ctx.fillStyle='#faf8f3';
+  for(let x=18;x<TW-14;x+=14){ctx.beginPath();ctx.arc(x,14,5.5,0,Math.PI*2);ctx.fill();}
+
+  const C=(t,y,sz,col='#1c1a18',w='normal')=>{ctx.font=`${w} ${sz}px "Courier New",monospace`;ctx.fillStyle=col;ctx.textAlign='center';ctx.fillText(t,TW/2,y);};
+  const L=(t,y,sz,col='#1c1a18')=>{ctx.font=`normal ${sz}px "Courier New",monospace`;ctx.fillStyle=col;ctx.textAlign='left';ctx.fillText(t,34,y);};
+  const R=(t,y,sz,col='#1c1a18')=>{ctx.font=`normal ${sz}px "Courier New",monospace`;ctx.fillStyle=col;ctx.textAlign='right';ctx.fillText(t,TW-34,y);};
+  const HR=y=>{ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(34,y);ctx.lineTo(TW-34,y);ctx.stroke();ctx.setLineDash([]);};
+  const THICK=y=>{ctx.strokeStyle='#888';ctx.lineWidth=1.5;ctx.setLineDash([]);ctx.beginPath();ctx.moveTo(34,y);ctx.lineTo(TW-34,y);ctx.stroke();};
+
+  let cy=58;
+  C('OPENSHANE',cy,26,'#111','bold');cy+=30;
+  C('P E R S O N A L',cy,16,'#333','bold');cy+=22;
+  C('Welcome to my world! 👋',cy,11,'#888');cy+=18;
+  THICK(cy);cy+=14;
+  C('Developer · Creator · Dreamer',cy,11,'#666');cy+=16;
+  C('2026',cy,11,'#666');cy+=14;
+  HR(cy);cy+=14;
+  C('QTY   ITEM                     PRICE',cy,10,'#aaa');cy+=18;
+  HR(cy);cy+=14;
+
+  const items=[
+    ['x9999','Curiosity','∞'],
+    ['x100','Passion','100%'],
+    ['x∞','Code Writing','Priceless'],
+    ['x404','Bugs Fixed','FREE'],
+    ['x1','Coffee ☕','∞'],
+    ['x32','Ideas','Priceless'],
+    ['x1M','Lines Written','0.01'],
+    ['x∞','Learning','FREE'],
+  ];
+  for(const[qty,name,price]of items){
+    ctx.font='normal 12px "Courier New",monospace';ctx.fillStyle='#666';ctx.textAlign='left';ctx.fillText(qty,34,cy);
+    ctx.fillStyle='#1c1a18';ctx.textAlign='left';ctx.fillText(name,100,cy);
+    R(price,cy,12);cy+=25;
+  }
+  HR(cy);cy+=14;L('* 热爱技术与创意',cy,10,'#aaa');cy+=22;
+  THICK(cy);cy+=16;
+  L('TOTAL',cy,14,'#555');R('PRICELESS',cy,14);cy+=22;
+  HR(cy);cy+=18;
+  C('THANK YOU FOR',cy,13,'#555');cy+=18;
+  C('VISITING MY WORLD',cy,13,'#555');cy+=22;
+  C('✦  KEEP CODING  ✦',cy,11,'#999');cy+=16;
+  C('openshane.github.io',cy,11,'#999');cy+=14;
+
+  const bx=50,bw=TW-100,bh=52;let bp=bx;ctx.fillStyle='#111';
+  while(bp<bx+bw){const bw2=Math.random()>0.6?3:(Math.random()>0.5?2:1);if(Math.random()>0.35)ctx.fillRect(bp,cy,bw2,bh);bp+=bw2+(Math.random()>0.5?1:0);}
+  
+  return new THREE.CanvasTexture(cv);
+}
+
+// ─── GEOMETRY ─────────────────────────────────────────────────────────────────
+function makeGeo() {
+  const geo=new THREE.BufferGeometry();
+  const vPos=new Float32Array(N*3),uv=new Float32Array(N*2),idx=[];
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){const i=pidx(r,c);uv[i*2]=c/(COLS-1);uv[i*2+1]=1-r/(ROWS-1);}
+  for(let r=0;r<ROWS-1;r++)for(let c=0;c<COLS-1;c++){const a=pidx(r,c),b=pidx(r,c+1),cc=pidx(r+1,c+1),d=pidx(r+1,c);idx.push(a,cc,b,a,d,cc);}
+  geo.setAttribute('position',new THREE.BufferAttribute(vPos,3));
+  geo.setAttribute('uv',new THREE.BufferAttribute(uv,2));
+  geo.setIndex(idx);geo.computeVertexNormals();return geo;
+}
+function syncGeo(geo){
+  const arr=geo.attributes.position.array;
+  for(let i=0;i<N;i++){arr[i*3]=pos[i*3];arr[i*3+1]=pos[i*3+1];arr[i*3+2]=pos[i*3+2];}
+  geo.attributes.position.needsUpdate=true;geo.computeVertexNormals();
+}
+
+const tex=buildTexture();
+tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+tex.encoding=THREE.sRGBEncoding;
+const geo=makeGeo();
+const mFront=new THREE.MeshPhongMaterial({map:tex,side:THREE.FrontSide,shininess:6,specular:new THREE.Color(0x444444)});
+const mBack=new THREE.MeshPhongMaterial({color:0xf2ece2,side:THREE.BackSide,shininess:3});
+const meshF=new THREE.Mesh(geo,mFront);meshF.castShadow=true;
+const meshB=new THREE.Mesh(geo,mBack);meshB.castShadow=true;
+scene.add(meshF);scene.add(meshB);
+
+// ─── INTERACTION ──────────────────────────────────────────────────────────────
+let dragging=false, dragPt=-1, offX=0, offY=0;
+const raycaster=new THREE.Raycaster(),mouse2=new THREE.Vector2();
+const dragPlane=new THREE.Plane(new THREE.Vector3(0,0,1),0),hit=new THREE.Vector3();
+
+function toWorld(cx,cy){
+  const r=renderer.domElement.getBoundingClientRect();
+  mouse2.set(((cx-r.left)/r.width)*2-1,-((cy-r.top)/r.height)*2+1);
+  raycaster.setFromCamera(mouse2,camera);raycaster.ray.intersectPlane(dragPlane,hit);return hit;
+}
+function nearestParticle(wx,wy){
+  let best=-1,bd=0.075;
+  for(let i=0;i<N;i++){const dx=pos[i*3]-wx,dy=pos[i*3+1]-wy,d=Math.sqrt(dx*dx+dy*dy);if(d<bd){bd=d;best=i;}}
+  return best;
+}
+function onDown(cx,cy){
+  const w=toWorld(cx,cy);const p=nearestParticle(w.x,w.y);if(p===-1)return;
+  dragging=true;
+  if(Math.floor(p/COLS)<2){dragPt=-1;offX=anchorX-w.x;offY=anchorY-w.y;}
+  else{dragPt=p;pinned[p]=1;}
+}
+function onMove(cx,cy){
+  if(!dragging)return;const w=toWorld(cx,cy);
+  if(dragPt===-1){
+    anchorX=w.x+offX;anchorY=w.y+offY;
+    camera.position.set(anchorX,anchorY-H*0.38,4.2);
+    camera.lookAt(anchorX,anchorY-H*0.38,0);
+  } else {
+    pos[dragPt*3]   = w.x;
+    pos[dragPt*3+1] = w.y;
+    // Actively push dragged point toward camera — it must be the tent peak
+    if(pos[dragPt*3+2] < SPACING*1.5) pos[dragPt*3+2] += SPACING*0.15;
+  }
+}
+function onUp(){if(!dragging)return;dragging=false;if(dragPt!==-1){pinned[dragPt]=0;dragPt=-1;}}
+
+const el=renderer.domElement;
+el.addEventListener('mousedown',e=>onDown(e.clientX,e.clientY));
+el.addEventListener('mousemove',e=>onMove(e.clientX,e.clientY));
+el.addEventListener('mouseup',onUp);el.addEventListener('mouseleave',onUp);
+el.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];onDown(t.clientX,t.clientY);},{passive:false});
+el.addEventListener('touchmove',e=>{e.preventDefault();const t=e.touches[0];onMove(t.clientX,t.clientY);},{passive:false});
+el.addEventListener('touchend',onUp);
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+initParticles();buildConstraints();
+for(let r=1;r<ROWS;r++)for(let c=0;c<COLS;c++){
+  const i=pidx(r,c);const arch=Math.sin(Math.PI*c/(COLS-1))*0.06*(r/(ROWS-1));
+  pos[i*3+2]=arch;prev[i*3+2]=arch*0.95;
+}
+function animate(){requestAnimationFrame(animate);stepPhysics();stepPhysics();syncGeo(geo);renderer.render(scene,camera);}
+animate();
     </script>
 </body>
 </html>
