@@ -82,8 +82,8 @@ const W = (COLS - 1) * SPACING;
 const H = (ROWS - 1) * SPACING;
 const N = COLS * ROWS;
 
-// 右上角单点固定
-let anchorX = 1.0, anchorY = 0.55;
+// 右上角单点固定 - 向左下悬挂
+let anchorX = 0.65, anchorY = 0.55;
 
 const pos    = new Float64Array(N * 3);
 const prev   = new Float64Array(N * 3);
@@ -95,14 +95,14 @@ function initParticles() {
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const i = pidx(r, c);
-      // 从右上方顶点开始
-      const x = anchorX - (c / (COLS - 1) - 0.5) * W;
+      // 从右上角开始，向左下分布
+      const x = anchorX - (c / (COLS - 1)) * W;
       const y = anchorY - (r / (ROWS - 1)) * H;
-      const arch = Math.sin(Math.PI * c / (COLS-1)) * 0.03 * (r / (ROWS-1));
+      const arch = Math.sin(Math.PI * c / (COLS-1)) * 0.02 * (r / (ROWS-1));
       pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=arch;
-      prev[i*3]=x; prev[i*3+1]=y; prev[i*3+2]=arch*0.97;
-      // 只有右上角顶点固定 (第一行最后一列)
-      pinned[i] = (r === 0 && c === COLS - 1) ? 1 : 0;
+      prev[i*3]=x; prev[i*3+1]=y; prev[i*3+2]=arch*0.98;
+      // 只有右上角固定
+      pinned[i] = (r === 0 && c === 0) ? 1 : 0;
     }
   }
 }
@@ -125,12 +125,10 @@ function buildConstraints() {
 }
 
 function pinTopRightCorner() {
-  // 只固定右上角顶点
-  const c = COLS - 1;
-  const b = pidx(0, c)*3;
-  const x = anchorX;
-  pos[b]=x; pos[b+1]=anchorY; pos[b+2]=0;
-  prev[b]=x; prev[b+1]=anchorY; prev[b+2]=0;
+  // 只固定右上角 (第一行第一列)
+  const b = pidx(0, 0)*3;
+  pos[b]=anchorX; pos[b+1]=anchorY; pos[b+2]=0;
+  prev[b]=anchorX; prev[b+1]=anchorY; prev[b+2]=0;
 }
 
 function stepPhysics() {
