@@ -121,6 +121,31 @@
       margin: 24px 0 10px;
     }
 
+    .hero-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(240px, 0.95fr);
+      gap: 20px;
+      align-items: start;
+      margin-top: 20px;
+    }
+
+    .summary-column,
+    .sidebar-column {
+      min-width: 0;
+    }
+
+    .sidebar-column {
+      display: grid;
+      gap: 18px;
+    }
+
+    .compact-panel {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
     .cta-button {
       display: inline-flex;
       align-items: center;
@@ -201,6 +226,12 @@
       font-size: 1rem;
       margin-bottom: 14px;
       letter-spacing: 0.02em;
+    }
+
+    .section-title::before {
+      content: '▸';
+      margin-right: 8px;
+      color: rgba(255, 230, 109, 0.84);
     }
 
     .stat-grid {
@@ -285,13 +316,17 @@
     }
 
     .about-box {
-      padding: 18px 18px 0;
+      padding: 18px;
       border-radius: 18px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.035);
+      border: 1px solid rgba(255,255,255,0.08);
       color: var(--muted);
-      line-height: 1.9;
-      font-size: 0.98rem;
+      line-height: 1.85;
+      font-size: 0.95rem;
+    }
+
+    .about-box p + p {
+      margin-top: 10px;
     }
 
     .receipt-side {
@@ -306,8 +341,8 @@
     }
 
     .receipt-caption {
-      text-align: right;
-      color: rgba(255,255,255,0.8);
+      text-align: left;
+      color: rgba(255,255,255,0.82);
       max-width: 360px;
       padding: 8px 4px 0;
     }
@@ -327,9 +362,9 @@
     }
 
     .receipt-caption p {
-      font-size: 0.93rem;
-      line-height: 1.75;
-      color: rgba(255,255,255,0.68);
+      font-size: 0.97rem;
+      line-height: 1.82;
+      color: rgba(255,255,255,0.74);
     }
 
     #receipt-wrap {
@@ -362,11 +397,18 @@
     .footer-note {
       max-width: 1380px;
       margin: 28px auto 0;
-      padding: 0 4px;
+      padding: 0 8px;
       color: rgba(255,255,255,0.48);
       font-family: 'Fira Code', monospace;
       font-size: 0.78rem;
       letter-spacing: 0.04em;
+      text-align: left;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-summary {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 1080px) {
@@ -440,73 +482,79 @@
         </div>
 
         <div class="tags">
-          <span class="tag">🔧 Python</span>
-          <span class="tag">🌐 Web</span>
-          <span class="tag">🤖 AI/ML</span>
-          <span class="tag">🔌 硬件</span>
-          <span class="tag">📱 移动端</span>
-          <span class="tag">🎮 Three.js</span>
+          <span class="tag">🌐 Web 开发</span>
+          <span class="tag">⚙️ 自动化</span>
+          <span class="tag">🤖 AI / ML</span>
+          <span class="tag">🏭 工业硬件</span>
+          <span class="tag">📱 移动应用</span>
+          <span class="tag">🎨 创意交互</span>
         </div>
 
-        <section class="stat-row">
-          <h3 class="section-title">▸ ✨ 我的概览</h3>
-          <div class="stat-grid">
-            <div class="stat-item"><span class="stat-value">2</span><span class="stat-label">核心项目</span></div>
-            <div class="stat-item"><span class="stat-value">1</span><span class="stat-label">交互实验</span></div>
-            <div class="stat-item"><span class="stat-value">10+</span><span class="stat-label">常用技术</span></div>
-            <div class="stat-item"><span class="stat-value">Now</span><span class="stat-label">持续构建中</span></div>
-          </div>
-        </section>
+        <div class="hero-summary">
+          <div class="summary-column">
+            <section class="stat-row compact-panel">
+              <h3 class="section-title">我的概览</h3>
+              <div class="stat-grid">
+                <div class="stat-item"><span class="stat-value">2</span><span class="stat-label">核心项目</span></div>
+                <div class="stat-item"><span class="stat-value">1</span><span class="stat-label">交互实验</span></div>
+                <div class="stat-item"><span class="stat-value">10+</span><span class="stat-label">常用技术</span></div>
+                <div class="stat-item"><span class="stat-value">Now</span><span class="stat-label">持续构建中</span></div>
+              </div>
+            </section>
 
-        <section class="stack-list">
-          <h3 class="section-title">▸ 🛠 技术栈</h3>
-          <div class="stack-items">
-            <span class="stack-pill">Python</span>
-            <span class="stack-pill">JavaScript</span>
-            <span class="stack-pill">TypeScript</span>
-            <span class="stack-pill">Node.js</span>
-            <span class="stack-pill">Three.js</span>
-            <span class="stack-pill">React</span>
-            <span class="stack-pill">Vue</span>
-            <span class="stack-pill">Docker</span>
-            <span class="stack-pill">Kubernetes</span>
-            <span class="stack-pill">Git</span>
+            <section class="link-list compact-panel">
+              <h3 class="section-title">快速链接</h3>
+              <p class="section-lead">如果你第一次来，建议先看代表项目，再看 GitHub，最后通过邮箱联系我。</p>
+              <div class="quick-links">
+                <a href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">
+                  <span>
+                    <span>🏭 IndustrialSim - 工业硬件仿真平台</span>
+                    <span class="quick-link-meta">当前最核心的开源项目，聚焦工业硬件设备仿真。</span>
+                  </span>
+                  <span class="quick-link-arrow">↗</span>
+                </a>
+                <a href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">
+                  <span>
+                    <span>📁 我的 GitHub 主页</span>
+                    <span class="quick-link-meta">查看仓库、代码实验和后续更新。</span>
+                  </span>
+                  <span class="quick-link-arrow">↗</span>
+                </a>
+                <a href="mailto:xieshuai.china@gmail.com">
+                  <span>
+                    <span>📧 联系我</span>
+                    <span class="quick-link-meta">欢迎交流合作、项目沟通或技术讨论。</span>
+                  </span>
+                  <span class="quick-link-arrow">→</span>
+                </a>
+              </div>
+            </section>
           </div>
-        </section>
 
-        <section class="link-list">
-          <h3 class="section-title">▸ 🔗 快速链接</h3>
-          <p class="section-lead">如果你第一次来，建议先看项目，再看 GitHub，最后通过邮箱联系我。</p>
-          <div class="quick-links">
-            <a href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">
-              <span>
-                <span>🏭 IndustrialSim - 工业硬件仿真平台</span>
-                <span class="quick-link-meta">当前最核心的开源项目，聚焦工业硬件设备仿真。</span>
-              </span>
-              <span class="quick-link-arrow">↗</span>
-            </a>
-            <a href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">
-              <span>
-                <span>📁 我的 GitHub 主页</span>
-                <span class="quick-link-meta">查看仓库、代码实验和后续更新。</span>
-              </span>
-              <span class="quick-link-arrow">↗</span>
-            </a>
-            <a href="mailto:xieshuai.china@gmail.com">
-              <span>
-                <span>📧 联系我</span>
-                <span class="quick-link-meta">欢迎交流合作、项目沟通或技术讨论。</span>
-              </span>
-              <span class="quick-link-arrow">→</span>
-            </a>
+          <div class="sidebar-column">
+            <section class="stack-list compact-panel">
+              <h3 class="section-title">技术栈</h3>
+              <div class="stack-items">
+                <span class="stack-pill">Python</span>
+                <span class="stack-pill">JavaScript</span>
+                <span class="stack-pill">TypeScript</span>
+                <span class="stack-pill">Node.js</span>
+                <span class="stack-pill">Three.js</span>
+                <span class="stack-pill">React</span>
+                <span class="stack-pill">Vue</span>
+                <span class="stack-pill">Docker</span>
+                <span class="stack-pill">Kubernetes</span>
+                <span class="stack-pill">Git</span>
+              </div>
+            </section>
+
+            <section class="about-box">
+              <h3 class="section-title">关于我</h3>
+              <p>热爱技术，喜欢折腾各种有趣的项目。正在学习 AI 和硬件相关的知识，希望能够创造出有价值的工具和产品。</p>
+              <p>🎯 座右铭：代码改变世界。欢迎交流合作，一起把想法做成真正能运行的作品。</p>
+            </section>
           </div>
-        </section>
-
-        <section class="about-box">
-          <h3 class="section-title">▸ 💬 关于我</h3>
-          <p>热爱技术，喜欢折腾各种有趣的项目。正在学习 AI 和硬件相关的知识，希望能够创造出有价值的工具和产品。欢迎交流合作！</p>
-          <p style="margin-top: 10px; padding-bottom: 18px;">🎯 座右铭：代码改变世界</p>
-        </section>
+        </div>
       </main>
 
       <aside class="receipt-side">
