@@ -82,7 +82,7 @@ const W = (COLS - 1) * SPACING;
 const H = (ROWS - 1) * SPACING;
 const N = COLS * ROWS;
 
-// Two corner anchors — only top-right pinned (right side fixed)
+// 顶部固定在右上方
 let anchorX = 1.0, anchorY = 0.55;
 
 const pos    = new Float64Array(N * 3);
@@ -95,14 +95,14 @@ function initParticles() {
   for (let r = 0; r < ROWS; r++) {
     for (let c = 0; c < COLS; c++) {
       const i = pidx(r, c);
-      // 右侧悬挂：从右边开始
-      const x = anchorX - (c / (COLS - 1)) * W;
+      // 从右上方开始
+      const x = anchorX - (c / (COLS - 1) - 0.5) * W;
       const y = anchorY - (r / (ROWS - 1)) * H;
       const arch = Math.sin(Math.PI * c / (COLS-1)) * 0.03 * (r / (ROWS-1));
       pos[i*3]=x; pos[i*3+1]=y; pos[i*3+2]=arch;
       prev[i*3]=x; prev[i*3+1]=y; prev[i*3+2]=arch*0.97;
-      // 只有第一列（最右边）固定
-      pinned[i] = (c === 0) ? 1 : 0;
+      // 顶部固定
+      pinned[i] = (r === 0) ? 1 : 0;
     }
   }
 }
@@ -124,13 +124,12 @@ function buildConstraints() {
   }
 }
 
-function pinRightColumn() {
-  for (let r = 0; r < ROWS; r++) {
-    const b = pidx(r, 0)*3;
-    const x = anchorX;
-    const y = anchorY - (r / (ROWS - 1)) * H;
-    pos[b]=x; pos[b+1]=y; pos[b+2]=0;
-    prev[b]=x; prev[b+1]=y; prev[b+2]=0;
+function pinTopRow() {
+  for (let c = 0; c < COLS; c++) {
+    const b = pidx(0,c)*3;
+    const x = anchorX + (c/(COLS-1) - 0.5)*W;
+    pos[b]=x; pos[b+1]=anchorY; pos[b+2]=0;
+    prev[b]=x; prev[b+1]=anchorY; prev[b+2]=0;
   }
 }
 
@@ -156,7 +155,7 @@ function stepPhysics() {
     if(pos[b+2]>maxZ) pos[b+2]=maxZ;
   }
   // Step through physics
-  pinRightColumn();
+  pinTopRow();
   const len=constraints.length;
   for(let iter=0;iter<ITERS;iter++){
     for(let k=0;k<len;k+=4){
