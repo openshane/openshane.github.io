@@ -852,6 +852,10 @@
     const ITERS = enableInteractiveReceipt ? 20 : 12;
     const GRAVITY = enableInteractiveReceipt ? 0.0065 : 0.0032;
     const DAMPING = enableInteractiveReceipt ? 0.979 : 0.992;
+    const SURFACE_Z = 0.012;
+    const MAX_OUTWARD_Z = SPACING * 0.9;
+    const MAX_INWARD_Z = -SPACING * 3.2;
+    const DRAG_RADIUS = SPACING * 4.2;
     const RECEIPT_TEXTURE_HEIGHT = 700;
     const W = (COLS - 1) * SPACING;
     const H = (ROWS - 1) * SPACING;
@@ -860,6 +864,8 @@
     // 右上方悬挂：固定顶部整行，但整体位置偏到右上区域
     let anchorX = 0.82;
     let anchorY = 1.36;
+    let anchorTargetX = anchorX;
+    let anchorTargetY = anchorY;
 
     const pos = new Float64Array(N * 3);
     const prev = new Float64Array(N * 3);
@@ -916,6 +922,10 @@
     }
 
     function stepPhysics() {
+      anchorX += (anchorTargetX - anchorX) * 0.2;
+      anchorY += (anchorTargetY - anchorY) * 0.2;
+      setCamera();
+
       for (let i = 0; i < N; i++) {
         if (pinned[i]) continue;
         const b = i * 3;
@@ -934,14 +944,12 @@
         pos[b] += vx;
         pos[b + 1] += vy - GRAVITY;
         pos[b + 2] += vz;
-        if (pos[b + 2] < 0) {
-          pos[b + 2] *= 0.3;
-          prev[b + 2] = pos[b + 2];
-        } else {
-          pos[b + 2] += (0 - pos[b + 2]) * 0.018;
+        pos[b + 2] += (SURFACE_Z - pos[b + 2]) * 0.028;
+        if (pos[b + 2] < MAX_INWARD_Z) {
+          pos[b + 2] = MAX_INWARD_Z;
+          prev[b + 2] = MAX_INWARD_Z;
         }
-        const maxZ = SPACING * 3.5;
-        if (pos[b + 2] > maxZ) pos[b + 2] = maxZ;
+        if (pos[b + 2] > MAX_OUTWARD_Z) pos[b + 2] = MAX_OUTWARD_Z;
       }
 
       pinTopRow();
@@ -967,9 +975,14 @@
         pinTopRow();
       }
 
+      applyDragCone();
+
       for (let i = 0; i < N; i++) {
         if (pinned[i]) continue;
-        if (pos[i * 3 + 2] < 0) { pos[i * 3 + 2] = 0; prev[i * 3 + 2] = 0; }
+        if (pos[i * 3 + 2] < MAX_INWARD_Z) {
+          pos[i * 3 + 2] = MAX_INWARD_Z;
+          prev[i * 3 + 2] = MAX_INWARD_Z;
+        }
       }
     }
 
@@ -1249,12 +1262,18 @@
       specular: new THREE.Color(0x444444)
     });
     const back = new THREE.MeshPhongMaterial({
-      color: 0xf2ece2,
+      color: 0xe7dccb,
       side: THREE.BackSide,
-      shininess: 3
+      shininess: 2,
+      transparent: true,
+      opacity: 0.88,
+      polygonOffset: true,
+      polygonOffsetFactor: 1,
+      polygonOffsetUnits: 1
     });
     const meshF = new THREE.Mesh(geo, front);
     const meshB = new THREE.Mesh(geo, back);
+    meshB.renderOrder = -1;
     meshF.castShadow = true;
     meshB.castShadow = true;
     scene.add(meshF);
@@ -1266,7 +1285,36 @@
     const hit = new THREE.Vector3();
     let dragging = false;
     let dragPt = -1;
+    let dragTargetX = 0;
+    let dragTargetY = 0;
     let offX = 0, offY = 0;
+
+    function applyDragCone() {
+      if (!dragging || dragPt === -1) return;
+      const centerX = dragTargetX;
+      const centerY = dragTargetY;
+      for (let i = 0; i < N; i++) {
+        const row = Math.floor(i / COLS);
+        if (row === 0) continue;
+        const b = i * 3;
+        const dx = pos[b] - centerX;
+        const dy = pos[b + 1] - centerY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist > DRAG_RADIUS) continue;
+        const t = 1 - dist / DRAG_RADIUS;
+        const smooth = t * t * (3 - 2 * t);
+        const coneTarget = MAX_INWARD_Z * (0.18 + 0.82 * smooth * smooth);
+        pos[b + 2] += (coneTarget - pos[b + 2]) * (i === dragPt ? 0.58 : 0.3 + smooth * 0.08);
+        prev[b + 2] += (pos[b + 2] - prev[b + 2]) * 0.42;
+
+        const pull = i === dragPt ? 0.78 : 0.1 + 0.18 * smooth;
+        pos[b] += (centerX - pos[b]) * pull;
+        pos[b + 1] += (centerY - pos[b + 1]) * pull;
+
+        const edgeRelax = (1 - smooth) * 0.04;
+        pos[b + 2] += (SURFACE_Z - pos[b + 2]) * edgeRelax;
+      }
+    }
 
     function setCamera() {
       const targetY = anchorY - H * 0.58;
@@ -1313,13 +1361,14 @@
       const p = nearestParticle(w.x, w.y);
       if (p === -1) return;
       dragging = true;
+      dragTargetX = w.x;
+      dragTargetY = w.y;
       if (Math.floor(p / COLS) < 2) {
         dragPt = -1;
         offX = anchorX - w.x;
         offY = anchorY - w.y;
       } else {
         dragPt = p;
-        pinned[p] = 1;
       }
     }
 
@@ -1327,23 +1376,18 @@
       if (!dragging) return;
       const w = toWorld(clientX, clientY);
       if (dragPt === -1) {
-        anchorX = Math.max(0.35, Math.min(1.15, w.x + offX));
-        anchorY = Math.max(0.9, Math.min(1.7, w.y + offY));
-        setCamera();
+        anchorTargetX = Math.max(0.35, Math.min(1.15, w.x + offX));
+        anchorTargetY = Math.max(0.9, Math.min(1.7, w.y + offY));
       } else {
-        pos[dragPt * 3] = w.x;
-        pos[dragPt * 3 + 1] = w.y;
-        if (pos[dragPt * 3 + 2] < SPACING * 1.5) pos[dragPt * 3 + 2] += SPACING * 0.15;
+        dragTargetX += (w.x - dragTargetX) * 0.45;
+        dragTargetY += (w.y - dragTargetY) * 0.45;
       }
     }
 
     function onUp() {
       if (!dragging) return;
       dragging = false;
-      if (dragPt !== -1) {
-        pinned[dragPt] = 0;
-        dragPt = -1;
-      }
+      dragPt = -1;
     }
 
     const canvas = renderer.domElement;
@@ -1384,6 +1428,35 @@
       receiptTextureControl.redraw(receiptProfiles[receiptProfileIndex]);
       tex.needsUpdate = true;
     }, 60000);
+
+    window.receiptDebug = {
+      previewCone() {
+        const previewX = anchorX + SPACING * 1.2;
+        const previewY = anchorY - H * 0.48;
+        dragging = true;
+        dragPt = pidx(Math.floor(ROWS * 0.45), Math.floor(COLS * 0.62));
+        dragTargetX = previewX;
+        dragTargetY = previewY;
+        for (let i = 0; i < 14; i++) stepPhysics();
+        dragging = false;
+        dragPt = -1;
+      },
+      resetPreview() {
+        initParticles();
+        buildConstraints();
+        for (let r = 1; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            const i = pidx(r, c);
+            const arch = Math.sin(Math.PI * c / (COLS - 1)) * 0.06 * (r / (ROWS - 1));
+            pos[i * 3 + 2] = arch;
+            prev[i * 3 + 2] = arch * 0.95;
+          }
+        }
+        anchorTargetX = anchorX = 0.82;
+        anchorTargetY = anchorY = 1.36;
+        setCamera();
+      }
+    };
 
     resize();
     const clock = new THREE.Clock();
