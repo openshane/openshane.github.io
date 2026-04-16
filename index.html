@@ -99,6 +99,15 @@
       background-clip: text;
     }
 
+    .title-kicker {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(188, 209, 255, 0.72);
+      margin-bottom: 12px;
+    }
+
     .subtitle {
       color: var(--muted);
       font-size: 1.02rem;
@@ -119,6 +128,13 @@
       flex-wrap: wrap;
       gap: 12px;
       margin: 24px 0 10px;
+    }
+
+    .cta-note {
+      color: var(--muted-soft);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-top: 10px;
     }
 
     .hero-summary {
@@ -212,6 +228,69 @@
       background: rgba(255,255,255,0.05);
       font-size: 0.92rem;
       color: rgba(255,255,255,0.92);
+    }
+
+    .featured-project {
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(255,230,109,0.13), rgba(78,205,196,0.09));
+      border: 1px solid rgba(255,230,109,0.22);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .featured-project .eyebrow {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255, 230, 109, 0.72);
+      margin-bottom: 10px;
+    }
+
+    .featured-project h2 {
+      font-size: clamp(1.3rem, 2vw, 1.7rem);
+      margin-bottom: 10px;
+      color: #fff8df;
+    }
+
+    .featured-project p {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .project-highlights {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .project-highlight {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(14, 25, 47, 0.28);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .project-highlight strong {
+      display: block;
+      color: #fff;
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+
+    .project-highlight span {
+      color: var(--muted-soft);
+      font-size: 0.86rem;
+      line-height: 1.65;
+    }
+
+    .project-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 8px;
     }
 
     .stat-row,
@@ -336,17 +415,17 @@
       flex-direction: column;
       align-items: flex-end;
       gap: 14px;
-      min-height: 640px;
-      opacity: 0.96;
+      min-height: 560px;
+      opacity: 0.9;
     }
 
     .receipt-showcase {
-      width: min(360px, 100%);
-      padding: 16px;
+      width: min(316px, 100%);
+      padding: 14px;
       border-radius: 28px;
-      background: linear-gradient(180deg, rgba(28, 39, 70, 0.82), rgba(45, 58, 103, 0.68) 42%, rgba(244, 224, 183, 0.16) 100%);
+      background: linear-gradient(180deg, rgba(28, 39, 70, 0.68), rgba(45, 58, 103, 0.5) 42%, rgba(244, 224, 183, 0.1) 100%);
       border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 22px 48px rgba(2, 7, 22, 0.34);
+      box-shadow: 0 18px 38px rgba(2, 7, 22, 0.26);
       backdrop-filter: blur(18px);
     }
 
@@ -367,20 +446,20 @@
     }
 
     .receipt-caption h2 {
-      font-size: 1.3rem;
-      margin-bottom: 10px;
+      font-size: 1.18rem;
+      margin-bottom: 8px;
       color: #fff6df;
     }
 
     .receipt-caption p {
-      font-size: 0.98rem;
-      line-height: 1.78;
-      color: rgba(233, 240, 255, 0.78);
+      font-size: 0.92rem;
+      line-height: 1.72;
+      color: rgba(233, 240, 255, 0.72);
     }
 
     #receipt-wrap {
       width: 100%;
-      height: 420px;
+      height: 360px;
       position: relative;
       border-radius: 22px;
       overflow: hidden;
@@ -401,7 +480,7 @@
     .receipt-tip {
       font-family: 'Fira Code', monospace;
       font-size: 0.76rem;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.44);
       letter-spacing: 0.08em;
       text-align: left;
       padding: 0 2px;
@@ -422,6 +501,9 @@
       .hero-summary {
         grid-template-columns: 1fr;
       }
+      .project-highlights {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 1080px) {
@@ -437,7 +519,7 @@
         margin-top: 8px;
       }
       .receipt-showcase {
-        width: min(400px, 92vw);
+        width: min(360px, 92vw);
       }
       .receipt-caption, .receipt-tip {
         text-align: left;
@@ -467,7 +549,7 @@
       .quick-links a {
         padding: 14px 16px;
       }
-      #receipt-wrap { height: 330px; }
+      #receipt-wrap { height: 280px; }
       .receipt-caption {
         max-width: 100%;
       }
@@ -485,25 +567,48 @@
         <div class="hero-top">
           <img class="avatar" src="https://avatars.githubusercontent.com/u/112454509?v=4" alt="openshane avatar">
           <div class="title-block">
-            <h1>Hi, I'm openshane 👋</h1>
-            <p class="subtitle">🚀 全栈开发者 · AI 与硬件探索者 · 持续构建有趣且有用的项目</p>
-            <p class="hero-description">我专注于 Web、自动化、AI/ML 和工业硬件相关方向，喜欢把灵感做成可运行、可展示、可分享的作品。这里是我的个人主页，也是我的实验场。</p>
+            <p class="title-kicker">Hi, I'm openshane</p>
+            <h1>构建能运行、能展示的工业硬件体验</h1>
+            <p class="subtitle">当前主推项目：IndustrialSim · 工业硬件仿真平台</p>
+            <p class="hero-description">我正在持续构建能落地、能演示、也能在线传播的项目，并尝试用更清晰的交互与页面表达，把技术价值直接展示出来。</p>
           </div>
         </div>
 
         <div class="hero-actions">
-          <a class="cta-button primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">查看代表项目 ↗</a>
-          <a class="cta-button secondary" href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">GitHub 主页 ↗</a>
-          <a class="cta-button ghost" href="mailto:xieshuai.china@gmail.com">联系我</a>
+          <a class="cta-button primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">先看代表作：IndustrialSim ↗</a>
+          <a class="cta-button secondary" href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">浏览 GitHub 仓库 ↗</a>
+          <a class="cta-button ghost" href="mailto:xieshuai.china@gmail.com">合作 / 联系我</a>
         </div>
+        <p class="cta-note">建议第一次访问先看代表项目，再继续浏览 GitHub 沉淀和互动实验。</p>
+
+        <section class="featured-project">
+          <div class="eyebrow">featured project</div>
+          <h2>IndustrialSim · 工业硬件仿真平台</h2>
+          <p>一个面向工业硬件设备的仿真与展示项目，重点放在“能运行、能讲解、能在线演示”的体验上，让抽象设备逻辑更容易被理解和展示。</p>
+          <div class="project-highlights">
+            <div class="project-highlight">
+              <strong>协议方向</strong>
+              <span>已覆盖 Modbus 与 OPC-UA，方便围绕工业通信场景继续扩展。</span>
+            </div>
+            <div class="project-highlight">
+              <strong>展示方式</strong>
+              <span>强调 Web 化表达与交互式演示，适合做说明、展示与后续传播。</span>
+            </div>
+            <div class="project-highlight">
+              <strong>当前状态</strong>
+              <span>持续开发中，正在逐步完善核心框架、设备模型与体验细节。</span>
+            </div>
+          </div>
+          <div class="project-links">
+            <a class="cta-button primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">查看项目详情 ↗</a>
+            <a class="cta-button ghost" href="mailto:xieshuai.china@gmail.com">交流项目想法</a>
+          </div>
+        </section>
 
         <div class="tags">
-          <span class="tag">🌐 Web 开发</span>
-          <span class="tag">⚙️ 自动化</span>
-          <span class="tag">🤖 AI / ML</span>
-          <span class="tag">🏭 工业硬件</span>
-          <span class="tag">📱 移动应用</span>
-          <span class="tag">🎨 创意交互</span>
+          <span class="tag">🧩 可运行原型</span>
+          <span class="tag">🏭 工业硬件仿真</span>
+          <span class="tag">🎨 创意交互实验</span>
         </div>
 
         <div class="hero-summary">
@@ -511,37 +616,37 @@
             <section class="stat-row compact-panel">
               <h3 class="section-title">我的概览</h3>
               <div class="stat-grid">
-                <div class="stat-item"><span class="stat-value">2</span><span class="stat-label">核心项目</span></div>
-                <div class="stat-item"><span class="stat-value">1</span><span class="stat-label">交互实验</span></div>
-                <div class="stat-item"><span class="stat-value">10+</span><span class="stat-label">常用技术</span></div>
-                <div class="stat-item"><span class="stat-value">Now</span><span class="stat-label">持续构建中</span></div>
+                <div class="stat-item"><span class="stat-value">01</span><span class="stat-label">先看代表作</span></div>
+                <div class="stat-item"><span class="stat-value">Web × Auto</span><span class="stat-label">当前主轴</span></div>
+                <div class="stat-item"><span class="stat-value">IndSim</span><span class="stat-label">正在主推</span></div>
+                <div class="stat-item"><span class="stat-value">Now</span><span class="stat-label">持续迭代中</span></div>
               </div>
             </section>
 
             <section class="link-list compact-panel">
-              <h3 class="section-title">快速链接</h3>
-              <p class="section-lead">如果你第一次来，建议先看代表项目，再看 GitHub，最后通过邮箱联系我。</p>
+              <h3 class="section-title">继续探索</h3>
+              <p class="section-lead">代表项目之外，这里是进一步了解我代码沉淀、交流方式和后续更新的入口。</p>
               <div class="quick-links">
-                <a href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">
-                  <span>
-                    <span>🏭 IndustrialSim - 工业硬件仿真平台</span>
-                    <span class="quick-link-meta">当前最核心的开源项目，聚焦工业硬件设备仿真。</span>
-                  </span>
-                  <span class="quick-link-arrow">↗</span>
-                </a>
                 <a href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">
                   <span>
-                    <span>📁 我的 GitHub 主页</span>
-                    <span class="quick-link-meta">查看仓库、代码实验和后续更新。</span>
+                    <span>📁 GitHub 主页</span>
+                    <span class="quick-link-meta">查看更多仓库、代码实验和后续更新记录。</span>
                   </span>
                   <span class="quick-link-arrow">↗</span>
                 </a>
                 <a href="mailto:xieshuai.china@gmail.com">
                   <span>
-                    <span>📧 联系我</span>
-                    <span class="quick-link-meta">欢迎交流合作、项目沟通或技术讨论。</span>
+                    <span>📧 联系方式</span>
+                    <span class="quick-link-meta">欢迎合作交流、项目沟通或技术讨论。</span>
                   </span>
                   <span class="quick-link-arrow">→</span>
+                </a>
+                <a href="https://openshane.github.io/openshane" target="_blank" rel="noopener noreferrer">
+                  <span>
+                    <span>🌌 当前主页</span>
+                    <span class="quick-link-meta">继续浏览这个 GitHub Pages 实验页的最新版本。</span>
+                  </span>
+                  <span class="quick-link-arrow">↗</span>
                 </a>
               </div>
             </section>
@@ -576,12 +681,12 @@
       <aside class="receipt-side">
         <div class="receipt-showcase">
           <div class="receipt-caption">
-            <div class="eyebrow">interactive receipt</div>
-            <h2>互动小票实验</h2>
-            <p>把我的个人介绍压缩进一张更利落的小票里：暖纸质感 + 深蓝光晕，让信息在首屏里更完整、也更容易一眼看清。</p>
+            <div class="eyebrow">side experiment</div>
+            <h2>互动小票 · 桌面端辅助实验</h2>
+            <p>一个帮助快速感知个人风格的辅助实验：保留趣味感，但把主角位置让给代表项目与核心信息。</p>
           </div>
           <div id="receipt-wrap" aria-label="physics receipt"></div>
-          <div class="receipt-tip">桌面端更适合拖拽体验 · 小票内容已按首屏可读性重新排版</div>
+          <div class="receipt-tip">桌面端更适合拖拽体验 · 作为辅助亮点保留在首屏右侧</div>
         </div>
       </aside>
     </div>
