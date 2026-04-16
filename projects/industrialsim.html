@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IndustrialSim - 工业硬件仿真平台</title>
+  <meta name="description" content="IndustrialSim 是一个面向工业硬件设备的仿真平台，聚焦可运行、可讲解、可在线展示的工业协议与设备逻辑表达。">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg: #091120;
+      --bg-soft: #101b31;
+      --panel: rgba(255,255,255,0.07);
+      --panel-strong: rgba(255,255,255,0.1);
+      --border: rgba(255,255,255,0.12);
+      --text: #f6f7fb;
+      --muted: rgba(246,247,251,0.76);
+      --muted-soft: rgba(246,247,251,0.6);
+      --accent: #ffe66d;
+      --accent-2: #4ecdc4;
+      --shadow: 0 24px 56px rgba(0,0,0,0.32);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(78,205,196,0.16), transparent 24%),
+        radial-gradient(circle at left center, rgba(255,230,109,0.14), transparent 22%),
+        linear-gradient(135deg, #091120 0%, #0d1a31 48%, #12304d 100%);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; }
+
+    .page {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 36px 24px 56px;
+    }
+
+    .topbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .crumb {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .crumb:hover { color: var(--text); }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+      gap: 24px;
+      padding: 30px;
+      margin-bottom: 26px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,230,109,0.9);
+      background: rgba(255,230,109,0.12);
+      border: 1px solid rgba(255,230,109,0.16);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.06;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg, #ffffff, #ffe66d 52%, #4ecdc4 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.85;
+      max-width: 760px;
+      margin-bottom: 18px;
+    }
+
+    .hero-summary {
+      color: var(--muted-soft);
+      font-size: 0.98rem;
+      line-height: 1.85;
+      max-width: 760px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn.primary {
+      color: #101827;
+      background: linear-gradient(135deg, #ffe66d, #ffd166);
+      box-shadow: 0 12px 28px rgba(255,230,109,0.22);
+    }
+
+    .btn.secondary {
+      color: var(--text);
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+
+    .hero-side {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .metric-card,
+    .mini-panel {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 22px;
+      padding: 20px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(8,16,34,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--accent);
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .metric span {
+      color: var(--muted-soft);
+      font-size: 0.86rem;
+      line-height: 1.6;
+    }
+
+    .section {
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .section h2 {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+      color: #fff4d8;
+    }
+
+    .section-intro {
+      color: var(--muted-soft);
+      line-height: 1.8;
+      margin-bottom: 18px;
+      max-width: 820px;
+    }
+
+    .feature-grid,
+    .roadmap-grid,
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .feature-card,
+    .roadmap-card,
+    .scenario-card {
+      padding: 18px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .feature-card h3,
+    .roadmap-card h3,
+    .scenario-card h3 {
+      font-size: 1.04rem;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .feature-card p,
+    .roadmap-card p,
+    .scenario-card p {
+      color: var(--muted);
+      line-height: 1.78;
+      font-size: 0.94rem;
+    }
+
+    .highlight-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .highlight-line span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(78,205,196,0.1);
+      border: 1px solid rgba(78,205,196,0.16);
+      color: #e5fffc;
+      font-size: 0.88rem;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+      gap: 20px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .timeline-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+
+    .timeline-item p {
+      color: var(--muted);
+      line-height: 1.76;
+      font-size: 0.94rem;
+    }
+
+    .footer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .footer-note {
+      margin-top: 28px;
+      color: rgba(246,247,251,0.5);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-align: left;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .split {
+        grid-template-columns: 1fr;
+      }
+      .feature-grid,
+      .roadmap-grid,
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page { padding: 18px 14px 34px; }
+      .hero,
+      .section { padding: 20px; }
+      .actions,
+      .footer-actions { flex-direction: column; }
+      .btn { width: 100%; }
+      .metric-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="crumb" href="../index.html">← 返回首页</a>
+      <span class="crumb">IndustrialSim / 项目详情页</span>
+    </div>
+
+    <section class="panel hero">
+      <div>
+        <div class="eyebrow">featured project / industrial sim</div>
+        <h1>IndustrialSim</h1>
+        <p class="hero-subtitle">一个面向工业硬件设备的仿真平台，目标是把原本依赖实体设备才能理解和演示的逻辑，变成可运行、可讲解、可在线传播的交互式体验。</p>
+        <p class="hero-summary">当前仓库已经可以直接看到项目定位、协议方向与后续迭代脉络。进入 GitHub 后，建议优先查看 README、协议支持方向以及项目结构演进，这也是我希望这个详情页重点承接并继续引导你深入的部分。</p>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">查看 README 与源码 ↗</a>
+          <a class="btn secondary" href="mailto:xieshuai.china@gmail.com">交流项目合作</a>
+          <a class="btn secondary" href="../index.html">返回作品首页</a>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="metric-card">
+          <div class="metric-grid">
+            <div class="metric">
+              <strong>协议支持</strong>
+              <span>当前已覆盖 Modbus 与 OPC-UA，便于继续向更多工业通信场景扩展。</span>
+            </div>
+            <div class="metric">
+              <strong>项目定位</strong>
+              <span>工业硬件设备仿真 + Web 交互展示 + 更清晰的讲解表达。</span>
+            </div>
+            <div class="metric">
+              <strong>当前阶段</strong>
+              <span>核心框架已起步，正在持续完善设备模型与展示方式。</span>
+            </div>
+            <div class="metric">
+              <strong>适用场景</strong>
+              <span>自动化调试、方案演示、教学说明、远程展示与原型验证。</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mini-panel">
+          <h2>进入 GitHub 后建议先看什么</h2>
+          <p class="section-intro">这个详情页负责解释项目价值，GitHub 仓库则更适合继续查看 README、当前协议方向、项目结构与后续演进。也就是说，这里先帮你判断值不值得继续看，仓库里再继续看实现与迭代。</p>
+          <div class="highlight-line">
+            <span>README</span>
+            <span>协议支持方向</span>
+            <span>项目结构</span>
+            <span>后续路线</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>当前仓库里你能直接看到什么</h2>
+      <p class="section-intro">为了让进入 GitHub 的动作更明确，这里先把“点进去会看到什么”讲清楚。当前更适合把它理解为一个已经明确方向、持续推进中的核心项目仓库，而不是一个纯概念页面。</p>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <h3>README 与项目定位</h3>
+          <p>可以先快速了解这个项目为什么存在、当前想解决的问题，以及它和工业设备仿真方向之间的关系。</p>
+        </article>
+        <article class="feature-card">
+          <h3>协议方向与支持重点</h3>
+          <p>当前会优先看到 Modbus、OPC-UA 等协议方向，这是理解项目工程路线最直接的入口。</p>
+        </article>
+        <article class="feature-card">
+          <h3>结构与后续演进</h3>
+          <p>仓库也承载着项目结构、迭代方向与后续扩展思路，适合继续判断它未来能长成什么样。</p>
+        </article>
+      </div>
+      <div class="footer-actions">
+        <a class="btn primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">现在去看仓库 ↗</a>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>项目想解决什么问题</h2>
+      <p class="section-intro">很多工业软件或自动化场景在早期沟通、测试、售前演示和教学说明阶段，都面临一个问题：没有真实硬件时，很难把设备逻辑清楚地演示给别人。IndustrialSim 想做的，就是把这些需要实体设备支撑的交互流程提前抽象出来，变成可运行的仿真体验。</p>
+      <div class="scenario-grid">
+        <article class="scenario-card">
+          <h3>自动化调试前置</h3>
+          <p>在没有真实设备到位时，先用仿真协议和行为模型验证基础流程，减少联调阶段的阻塞与盲区。</p>
+        </article>
+        <article class="scenario-card">
+          <h3>方案与功能说明</h3>
+          <p>把设备状态、通信协议和交互逻辑做成可讲解的页面，让非研发角色也能快速理解系统工作方式。</p>
+        </article>
+        <article class="scenario-card">
+          <h3>教学与远程展示</h3>
+          <p>通过 Web 化表达让演示不再被现场硬件限制，适合做教学、录屏、远程介绍和原型沟通。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>当前最核心的能力方向</h2>
+      <p class="section-intro">相比只做一个静态展示页，我更希望它具备“可模拟、可交互、可继续扩展”的基础能力，因此现在把重点放在协议、模型、展示这三条线上。</p>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <h3>协议模拟</h3>
+          <p>以 Modbus、OPC-UA 等常见工业协议为起点，逐步抽象出适合演示与调试的通信层模拟能力。</p>
+        </article>
+        <article class="feature-card">
+          <h3>设备行为表达</h3>
+          <p>不仅是回传数据，更要让设备状态变化、交互逻辑与异常场景具有可理解的表现形式。</p>
+        </article>
+        <article class="feature-card">
+          <h3>Web 化展示</h3>
+          <p>让项目具备更低的访问门槛，通过浏览器完成说明、演示和传播，而不是只能停留在代码仓库内部。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel section split">
+      <div>
+        <h2>项目路线图</h2>
+        <p class="section-intro">这不是一个一次性完成的小 demo，而是一个可以持续扩展的方向型项目。当前更重基础能力和表达方式，后续会继续把“仿真”和“展示”都做得更完整。</p>
+        <div class="timeline">
+          <div class="timeline-item">
+            <strong>已起步</strong>
+            <p>仓库已建立，核心框架方向明确，并已引入 Modbus 与 OPC-UA 作为当前重点协议支持。</p>
+          </div>
+          <div class="timeline-item">
+            <strong>当前推进</strong>
+            <p>继续完善设备模型、项目叙事与可视化展示方式，让仓库不仅能读代码，也能更容易被理解。</p>
+          </div>
+          <div class="timeline-item">
+            <strong>下一步</strong>
+            <p>补充更多可展示的仿真场景、整理项目结构与文档，并逐步增强“可演示、可解释、可在线浏览”的体验。</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h2>如果你来看这个项目，最值得先关注</h2>
+        <p class="section-intro">如果你是第一次接触 IndustrialSim，我建议先看下面这几个点，它们最能说明这个项目的价值和发展方向。</p>
+        <div class="roadmap-grid">
+          <article class="roadmap-card">
+            <h3>1. 为什么需要仿真</h3>
+            <p>真实设备成本高、依赖现场，而仿真可以把理解和验证前移。</p>
+          </article>
+          <article class="roadmap-card">
+            <h3>2. 协议如何落地</h3>
+            <p>从通用工业协议切入，比只做页面展示更能体现项目的工程方向。</p>
+          </article>
+          <article class="roadmap-card">
+            <h3>3. 如何讲给别人听</h3>
+            <p>这个项目特别重视“可展示性”，不仅实现功能，也要让别人能快速看懂。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>下一步可以怎么继续</h2>
+      <p class="section-intro">如果后续继续打磨这个详情页，我会优先补充真实界面截图、协议/设备结构图，以及更具体的功能清单。当前这版先承担“解释项目、引导点击、承接首页流量”的作用。</p>
+      <div class="footer-actions">
+        <a class="btn primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">进入项目仓库 ↗</a>
+        <a class="btn secondary" href="../index.html">回到首页继续浏览</a>
+        <a class="btn secondary" href="mailto:xieshuai.china@gmail.com">联系我聊这个项目</a>
+      </div>
+    </section>
+
+    <div class="footer-note">IndustrialSim detail page · handcrafted for openshane.github.io</div>
+  </div>
+</body>
+</html>
