@@ -519,12 +519,12 @@
     }
 
     .receipt-showcase {
-      width: min(316px, 100%);
-      padding: 14px;
+      width: min(332px, 100%);
+      padding: 16px;
       border-radius: 28px;
-      background: linear-gradient(180deg, rgba(28, 39, 70, 0.68), rgba(45, 58, 103, 0.5) 42%, rgba(244, 224, 183, 0.1) 100%);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 18px 38px rgba(2, 7, 22, 0.26);
+      background: linear-gradient(180deg, rgba(23, 34, 63, 0.82), rgba(32, 49, 89, 0.7) 42%, rgba(208, 220, 255, 0.12) 100%);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 22px 44px rgba(2, 7, 22, 0.32);
       backdrop-filter: blur(18px);
     }
 
@@ -537,34 +537,34 @@
 
     .receipt-caption .eyebrow {
       font-family: 'Fira Code', monospace;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       letter-spacing: 0.12em;
-      color: rgba(188, 209, 255, 0.68);
+      color: rgba(214, 228, 255, 0.84);
       text-transform: uppercase;
       margin-bottom: 8px;
     }
 
     .receipt-caption h2 {
-      font-size: 1.18rem;
-      margin-bottom: 8px;
+      font-size: 1.28rem;
+      margin-bottom: 10px;
       color: #fff6df;
     }
 
     .receipt-caption p {
-      font-size: 0.92rem;
-      line-height: 1.72;
-      color: rgba(233, 240, 255, 0.72);
+      font-size: 0.98rem;
+      line-height: 1.78;
+      color: rgba(242, 246, 255, 0.86);
     }
 
     #receipt-wrap {
       width: 100%;
-      height: 360px;
+      height: 392px;
       position: relative;
       border-radius: 22px;
       overflow: hidden;
-      background: radial-gradient(circle at top, rgba(255, 247, 227, 0.96), rgba(235, 222, 196, 0.84) 38%, rgba(60, 74, 121, 0.3) 100%);
-      border: 1px solid rgba(255,245,219,0.42);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 12px 30px rgba(6, 12, 30, 0.22);
+      background: radial-gradient(circle at 50% 18%, rgba(222, 230, 247, 0.92), rgba(181, 194, 221, 0.8) 42%, rgba(88, 108, 148, 0.62) 100%);
+      border: 1px solid rgba(232,239,255,0.48);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.54), inset 0 -22px 44px rgba(34, 51, 92, 0.2), 0 16px 34px rgba(6, 12, 30, 0.28);
     }
 
     #receipt-wrap canvas {
@@ -578,8 +578,8 @@
 
     .receipt-tip {
       font-family: 'Fira Code', monospace;
-      font-size: 0.76rem;
-      color: rgba(255,255,255,0.44);
+      font-size: 0.82rem;
+      color: rgba(232,239,255,0.72);
       letter-spacing: 0.08em;
       text-align: left;
       padding: 0 2px;
@@ -671,7 +671,7 @@
       .quick-links a {
         padding: 14px 16px;
       }
-      #receipt-wrap { height: 280px; }
+      #receipt-wrap { height: 300px; }
       .receipt-caption {
         max-width: 100%;
       }
@@ -985,7 +985,7 @@
 
     const wallMesh = new THREE.Mesh(
       new THREE.PlaneGeometry(20, 20),
-      new THREE.MeshLambertMaterial({ color: 0xdee7fb, transparent: true, opacity: 0.94 })
+      new THREE.MeshLambertMaterial({ color: 0xcad5eb, transparent: true, opacity: 0.98 })
     );
     wallMesh.position.z = -0.45;
     wallMesh.receiveShadow = true;
@@ -1010,127 +1010,194 @@
     fill.position.set(3, -1, 2);
     scene.add(fill);
 
-    function buildTexture() {
-      const TW = 512, TH = 700;
+    const receiptProfiles = [
+      {
+        header: 'OPENSHANE',
+        subheader: 'PROFILE / NOTE',
+        intro: '你好，我是 openshane',
+        focusLabel: 'ABOUT',
+        focusValue: 'Builder / Maker',
+        line: '热爱把想法做成可运行的作品',
+        quoteLabel: 'QUOTE',
+        quote: 'Stay hungry, stay foolish.',
+        quoteBy: '— Steve Jobs',
+        footer: 'KEEP CODING · KEEP CREATING'
+      },
+      {
+        header: 'OPENSHANE',
+        subheader: 'PROFILE / NOTE',
+        intro: '你好，我是 openshane',
+        focusLabel: 'ABOUT',
+        focusValue: 'Web / AI / Hardware',
+        line: '持续构建有趣且有用的产品原型',
+        quoteLabel: 'QUOTE',
+        quote: 'Simplicity is the ultimate sophistication.',
+        quoteBy: '— Leonardo da Vinci',
+        footer: 'THINK CLEAR · BUILD WELL'
+      },
+      {
+        header: 'OPENSHANE',
+        subheader: 'PROFILE / NOTE',
+        intro: '你好，我是 openshane',
+        focusLabel: 'ABOUT',
+        focusValue: 'Curious Engineer',
+        line: '喜欢工业硬件、自动化与交互表达',
+        quoteLabel: 'QUOTE',
+        quote: 'What we know is a drop, what we do not know is an ocean.',
+        quoteBy: '— Isaac Newton',
+        footer: 'LEARN FAST · SHIP OFTEN'
+      },
+      {
+        header: 'OPENSHANE',
+        subheader: 'PROFILE / NOTE',
+        intro: '你好，我是 openshane',
+        focusLabel: 'ABOUT',
+        focusValue: 'Independent Builder',
+        line: '希望做出能被看见也能被使用的作品',
+        quoteLabel: 'QUOTE',
+        quote: 'The best way to predict the future is to invent it.',
+        quoteBy: '— Alan Kay',
+        footer: 'MAKE IDEAS REAL'
+      }
+    ];
+
+    function buildTexture(profile) {
+      const TW = 640, TH = 560;
       const cv = document.createElement('canvas');
       cv.width = TW; cv.height = TH;
       const ctx = cv.getContext('2d');
 
-      const paperGrad = ctx.createLinearGradient(0, 0, 0, TH);
-      paperGrad.addColorStop(0, '#fffef9');
-      paperGrad.addColorStop(0.5, '#f8f4ea');
-      paperGrad.addColorStop(1, '#efe8d8');
-      ctx.fillStyle = paperGrad;
-      ctx.fillRect(0, 0, TW, TH);
+      function drawReceipt(data) {
+        ctx.clearRect(0, 0, TW, TH);
 
-      for (let y = 0; y < TH; y += 2) {
-        ctx.fillStyle = `rgba(34,42,68,${0.0033 + Math.random() * 0.0022})`;
-        ctx.fillRect(0, y, TW, 1);
+        const paperGrad = ctx.createLinearGradient(0, 0, 0, TH);
+        paperGrad.addColorStop(0, '#fffefb');
+        paperGrad.addColorStop(0.5, '#fcf7ee');
+        paperGrad.addColorStop(1, '#efe2cf');
+        ctx.fillStyle = paperGrad;
+        ctx.fillRect(0, 0, TW, TH);
+
+        for (let y = 0; y < TH; y += 2) {
+          ctx.fillStyle = `rgba(16,24,43,${0.0052 + Math.random() * 0.0022})`;
+          ctx.fillRect(0, y, TW, 1);
+        }
+        for (let i = 0; i < 360; i++) {
+          ctx.fillStyle = `rgba(136,113,79,${Math.random() * 0.016 + 0.005})`;
+          ctx.fillRect(Math.random() * TW, Math.random() * TH, Math.random() * 3 + 1, 1);
+        }
+
+        const vL = ctx.createLinearGradient(0, 0, TW, 0);
+        vL.addColorStop(0, 'rgba(20,28,50,0.10)');
+        vL.addColorStop(0.09, 'rgba(20,28,50,0)');
+        vL.addColorStop(0.91, 'rgba(20,28,50,0)');
+        vL.addColorStop(1, 'rgba(20,28,50,0.10)');
+        ctx.fillStyle = vL;
+        ctx.fillRect(0, 0, TW, TH);
+
+        const topBand = ctx.createLinearGradient(0, 0, TW, 0);
+        topBand.addColorStop(0, '#d7e4ff');
+        topBand.addColorStop(1, '#ffe29a');
+        ctx.fillStyle = topBand;
+        ctx.fillRect(0, 0, TW, 38);
+        ctx.fillStyle = '#fffdf5';
+        for (let x = 20; x < TW - 18; x += 16) {
+          ctx.beginPath();
+          ctx.arc(x, 19, 6, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        const C = (t, y, sz, col = '#1b1f34', w = 'normal') => {
+          ctx.font = `${w} ${sz}px "Courier New", monospace`;
+          ctx.fillStyle = col;
+          ctx.textAlign = 'center';
+          ctx.fillText(t, TW / 2, y);
+        };
+        const L = (t, y, sz, col = '#1b1f34', w = 'normal') => {
+          ctx.font = `${w} ${sz}px "Courier New", monospace`;
+          ctx.fillStyle = col;
+          ctx.textAlign = 'left';
+          ctx.fillText(t, 48, y);
+        };
+        const R = (t, y, sz, col = '#1b1f34', w = 'normal') => {
+          ctx.font = `${w} ${sz}px "Courier New", monospace`;
+          ctx.fillStyle = col;
+          ctx.textAlign = 'right';
+          ctx.fillText(t, TW - 48, y);
+        };
+        const HR = y => {
+          ctx.strokeStyle = 'rgba(54,63,92,0.62)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([6, 4]);
+          ctx.beginPath();
+          ctx.moveTo(48, y);
+          ctx.lineTo(TW - 48, y);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        };
+        const THICK = y => {
+          ctx.strokeStyle = 'rgba(22,32,57,0.94)';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(48, y);
+          ctx.lineTo(TW - 48, y);
+          ctx.stroke();
+        };
+
+        function wrapCenter(text, y, size, color, weight = 'normal', maxWidth = TW - 120, lineGap = 10) {
+          ctx.font = `${weight} ${size}px "Courier New", monospace`;
+          ctx.fillStyle = color;
+          ctx.textAlign = 'center';
+          const words = text.split(' ');
+          const lines = [];
+          let current = '';
+          for (const word of words) {
+            const test = current ? `${current} ${word}` : word;
+            if (ctx.measureText(test).width > maxWidth && current) {
+              lines.push(current);
+              current = word;
+            } else {
+              current = test;
+            }
+          }
+          if (current) lines.push(current);
+          lines.forEach((line, index) => ctx.fillText(line, TW / 2, y + index * (size + lineGap)));
+          return y + (lines.length - 1) * (size + lineGap);
+        }
+
+        let cy = 82;
+        C(data.header, cy, 54, '#0f1526', 'bold'); cy += 48;
+        C(data.subheader, cy, 22, '#404a64', 'bold'); cy += 32;
+        THICK(cy); cy += 34;
+
+        C(data.intro, cy, 46, '#11172a', 'bold'); cy += 54;
+        cy = wrapCenter(data.line, cy, 24, '#2f3d57', 'bold', TW - 130, 8) + 36;
+        HR(cy); cy += 34;
+
+        L(data.focusLabel, cy, 19, '#596884', 'bold');
+        R(data.focusValue, cy, 20, '#122038', 'bold'); cy += 36;
+
+        L(data.quoteLabel, cy, 19, '#596884', 'bold'); cy += 34;
+        cy = wrapCenter(`“${data.quote}”`, cy, 26, '#141c30', 'bold', TW - 140, 10) + 20;
+        C(data.quoteBy, cy, 20, '#43516d', 'bold'); cy += 34;
+
+        HR(cy); cy += 34;
+        C('github.com/openshane', cy, 22, '#152034', 'bold'); cy += 28;
+        C(data.footer, cy, 22, '#2b354e', 'bold'); cy += 24;
+
+        const bx = 132, bw = TW - 264, bh = 30;
+        let bp = bx;
+        ctx.fillStyle = '#12172a';
+        while (bp < bx + bw) {
+          const bw2 = Math.random() > 0.62 ? 3 : (Math.random() > 0.5 ? 2 : 1);
+          if (Math.random() > 0.38) ctx.fillRect(bp, cy, bw2, bh);
+          bp += bw2 + (Math.random() > 0.5 ? 1 : 0);
+        }
       }
-      for (let i = 0; i < 420; i++) {
-        ctx.fillStyle = `rgba(171,149,107,${Math.random() * 0.016 + 0.005})`;
-        ctx.fillRect(Math.random() * TW, Math.random() * TH, Math.random() * 3 + 1, 1);
-      }
 
-      const vL = ctx.createLinearGradient(0, 0, TW, 0);
-      vL.addColorStop(0, 'rgba(34,41,71,0.06)');
-      vL.addColorStop(0.07, 'rgba(34,41,71,0)');
-      vL.addColorStop(0.93, 'rgba(34,41,71,0)');
-      vL.addColorStop(1, 'rgba(34,41,71,0.06)');
-      ctx.fillStyle = vL;
-      ctx.fillRect(0, 0, TW, TH);
-
-      const topBand = ctx.createLinearGradient(0, 0, TW, 0);
-      topBand.addColorStop(0, '#dfe8ff');
-      topBand.addColorStop(1, '#fff0cc');
-      ctx.fillStyle = topBand;
-      ctx.fillRect(0, 0, TW, 34);
-      ctx.fillStyle = '#fffaf0';
-      for (let x = 18; x < TW - 14; x += 14) {
-        ctx.beginPath();
-        ctx.arc(x, 17, 5.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      const C = (t, y, sz, col = '#1b1f34', w = 'normal') => {
-        ctx.font = `${w} ${sz}px "Courier New", monospace`;
-        ctx.fillStyle = col;
-        ctx.textAlign = 'center';
-        ctx.fillText(t, TW / 2, y);
-      };
-      const L = (t, y, sz, col = '#1b1f34', w = 'normal') => {
-        ctx.font = `${w} ${sz}px "Courier New", monospace`;
-        ctx.fillStyle = col;
-        ctx.textAlign = 'left';
-        ctx.fillText(t, 34, y);
-      };
-      const R = (t, y, sz, col = '#1b1f34', w = 'normal') => {
-        ctx.font = `${w} ${sz}px "Courier New", monospace`;
-        ctx.fillStyle = col;
-        ctx.textAlign = 'right';
-        ctx.fillText(t, TW - 34, y);
-      };
-      const HR = y => {
-        ctx.strokeStyle = 'rgba(89,96,122,0.42)';
-        ctx.lineWidth = 1;
-        ctx.setLineDash([5, 4]);
-        ctx.beginPath();
-        ctx.moveTo(34, y);
-        ctx.lineTo(TW - 34, y);
-        ctx.stroke();
-        ctx.setLineDash([]);
-      };
-      const THICK = y => {
-        ctx.strokeStyle = 'rgba(45,54,86,0.72)';
-        ctx.lineWidth = 1.7;
-        ctx.beginPath();
-        ctx.moveTo(34, y);
-        ctx.lineTo(TW - 34, y);
-        ctx.stroke();
-      };
-
-      let cy = 74;
-      C('OPENSHANE', cy, 38, '#141a2f', 'bold'); cy += 38;
-      C('PROFILE / SNAPSHOT', cy, 20, '#4f5973', 'bold'); cy += 30;
-      C('专注 AI、Web 与工业硬件的全栈开发者', cy, 22, '#5d6781', 'bold'); cy += 28;
-      THICK(cy); cy += 24;
-
-      C('你好，我是 openshane', cy, 32, '#1a1f34', 'bold'); cy += 42;
-      C('让项目既能跑起来，也能被看见', cy, 20, '#4f5973', 'bold'); cy += 28;
-      C('持续做能落地、能展示、能分享的作品', cy, 18, '#5f6982'); cy += 24;
-      HR(cy); cy += 24;
-
-      L('当前定位', cy, 18, '#66708b', 'bold');
-      R('Builder / Maker', cy, 18, '#23304d', 'bold'); cy += 28;
-      L('• AI 应用、Web 产品与自动化工程', cy, 18, '#1f2439'); cy += 30;
-      L('• 工业硬件模拟与交互式项目表达', cy, 18, '#1f2439'); cy += 30;
-
-      HR(cy); cy += 24;
-      L('代表项目', cy, 18, '#66708b', 'bold');
-      R('IndustrialSim', cy, 20, '#1b1f34', 'bold'); cy += 28;
-      C('工业硬件设备仿真平台', cy, 19, '#1f2439', 'bold'); cy += 24;
-      C('Modbus / OPC-UA · 持续开发中', cy, 17, '#4f5973'); cy += 28;
-
-      HR(cy); cy += 24;
-      L('联系与主页', cy, 18, '#66708b', 'bold');
-      R('GitHub / Email', cy, 18, '#43506f', 'bold'); cy += 28;
-      C('github.com/openshane', cy, 18, '#1f2439'); cy += 24;
-      C('xieshuai.china@gmail.com', cy, 17, '#1f2439'); cy += 26;
-
-      THICK(cy); cy += 22;
-      C('KEEP CODING · KEEP CREATING', cy, 20, '#36405d', 'bold'); cy += 22;
-      C('openshane.github.io', cy, 15, '#7b8498'); cy += 22;
-
-      const bx = 84, bw = TW - 168, bh = 36;
-      let bp = bx;
-      ctx.fillStyle = '#1a1f34';
-      while (bp < bx + bw) {
-        const bw2 = Math.random() > 0.62 ? 3 : (Math.random() > 0.5 ? 2 : 1);
-        if (Math.random() > 0.4) ctx.fillRect(bp, cy, bw2, bh);
-        bp += bw2 + (Math.random() > 0.5 ? 1 : 0);
-      }
-
-      return new THREE.CanvasTexture(cv);
+      drawReceipt(profile);
+      const texture = new THREE.CanvasTexture(cv);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return { texture, redraw: drawReceipt };
     }
 
     function makeGeo() {
@@ -1169,7 +1236,11 @@
       geo.computeVertexNormals();
     }
 
-    const tex = buildTexture();
+    let receiptProfileIndex = 0;
+    const receiptTextureControl = buildTexture(receiptProfiles[receiptProfileIndex]);
+    const tex = receiptTextureControl.texture;
+    tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
+    tex.needsUpdate = true;
     const geo = makeGeo();
     const front = new THREE.MeshPhongMaterial({
       map: tex,
@@ -1198,9 +1269,10 @@
     let offX = 0, offY = 0;
 
     function setCamera() {
-      const camY = anchorY - H * 0.38;
+      const targetY = anchorY - H * 0.58;
+      const camY = anchorY - H * 0.44;
       camera.position.set(anchorX, camY, 4.2);
-      camera.lookAt(anchorX, camY, 0);
+      camera.lookAt(anchorX, targetY, 0);
     }
 
     function resize() {
@@ -1306,6 +1378,12 @@
         prev[i * 3 + 2] = arch * 0.95;
       }
     }
+
+    setInterval(() => {
+      receiptProfileIndex = (receiptProfileIndex + 1) % receiptProfiles.length;
+      receiptTextureControl.redraw(receiptProfiles[receiptProfileIndex]);
+      tex.needsUpdate = true;
+    }, 60000);
 
     resize();
     const clock = new THREE.Clock();
