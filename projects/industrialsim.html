@@ -289,6 +289,54 @@
       font-size: 0.94rem;
     }
 
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .status-card {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status-card strong {
+      display: block;
+      color: var(--accent);
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .status-card p {
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 0.9rem;
+    }
+
+    .diagram-shell {
+      margin-top: 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(4,10,22,0.86), rgba(11,20,40,0.92));
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .diagram-shell svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .diagram-caption {
+      padding: 14px 18px 18px;
+      color: var(--muted-soft);
+      line-height: 1.75;
+      font-size: 0.92rem;
+    }
+
     .footer-actions {
       display: flex;
       flex-wrap: wrap;
@@ -312,7 +360,8 @@
       }
       .feature-grid,
       .roadmap-grid,
-      .scenario-grid {
+      .scenario-grid,
+      .status-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -403,6 +452,91 @@
       </div>
       <div class="footer-actions">
         <a class="btn primary" href="https://github.com/openshane/IndustrialSim" target="_blank" rel="noopener noreferrer">现在去看仓库 ↗</a>
+      </div>
+    </section>
+
+    <section class="panel section">
+      <h2>当前进展与结构化证据</h2>
+      <p class="section-intro">为了避免这个页面只停留在理念层，这里把当前已经明确的进展与结构重点直接列出来。它们不等于“项目已经完整完成”，但足够说明仓库已经有清晰方向、协议重点和持续推进的工程骨架。</p>
+      <div class="status-grid">
+        <article class="status-card">
+          <strong>核心仓库已建立</strong>
+          <p>IndustrialSim 已经作为独立仓库存在，说明它不是零散想法，而是持续迭代中的主项目载体。</p>
+        </article>
+        <article class="status-card">
+          <strong>协议方向已明确</strong>
+          <p>当前重点放在 Modbus 与 OPC-UA，这让项目从一开始就有明确的工业通信入口，而不是纯 UI 展示。</p>
+        </article>
+        <article class="status-card">
+          <strong>表达目标已清晰</strong>
+          <p>项目不是只追求“模拟能跑”，还强调讲解、展示和远程传播，这会直接影响后续页面与架构设计。</p>
+        </article>
+        <article class="status-card">
+          <strong>后续扩展空间明确</strong>
+          <p>设备模型、场景演示、结构整理和文档补充都已经进入路线图，适合继续沿着工程化方向推进。</p>
+        </article>
+      </div>
+
+      <div class="diagram-shell">
+        <svg viewBox="0 0 1080 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="IndustrialSim architecture overview">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.6"/>
+            </pattern>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+            </marker>
+          </defs>
+
+          <rect width="1080" height="520" fill="#020617"/>
+          <rect width="1080" height="520" fill="url(#grid)"/>
+
+          <text x="60" y="56" fill="#f8fafc" font-size="24" font-family="JetBrains Mono, monospace">IndustrialSim architecture overview</text>
+          <text x="60" y="84" fill="#94a3b8" font-size="12" font-family="JetBrains Mono, monospace">Current focus: protocol simulation + device behavior + web-based presentation</text>
+
+          <line x1="220" y1="180" x2="360" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="540" y1="180" x2="680" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="860" y1="180" x2="900" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+          <line x1="450" y1="232" x2="450" y2="350" stroke="#fb923c" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+          <line x1="770" y1="232" x2="770" y2="350" stroke="#fb923c" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow)"/>
+
+          <rect x="60" y="128" width="160" height="104" rx="14" fill="#0f172a"/>
+          <rect x="60" y="128" width="160" height="104" rx="14" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="80" y="160" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Use Cases</text>
+          <text x="80" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">调试 / 演示 / 教学</text>
+          <text x="80" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">远程展示 / 原型验证</text>
+
+          <rect x="360" y="128" width="180" height="104" rx="14" fill="#0f172a"/>
+          <rect x="360" y="128" width="180" height="104" rx="14" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="382" y="160" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Protocol Layer</text>
+          <text x="382" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">Modbus</text>
+          <text x="382" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">OPC-UA</text>
+
+          <rect x="680" y="128" width="180" height="104" rx="14" fill="#0f172a"/>
+          <rect x="680" y="128" width="180" height="104" rx="14" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
+          <text x="706" y="160" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Device Logic</text>
+          <text x="706" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">状态变化 / 行为模拟</text>
+          <text x="706" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">异常与交互表达</text>
+
+          <rect x="900" y="128" width="120" height="104" rx="14" fill="#0f172a"/>
+          <rect x="900" y="128" width="120" height="104" rx="14" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+          <text x="922" y="160" fill="#f8fafc" font-size="17" font-family="JetBrains Mono, monospace">Web UI</text>
+          <text x="922" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">展示 / 讲解</text>
+          <text x="922" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">传播入口</text>
+
+          <rect x="300" y="350" width="300" height="110" rx="16" fill="#0f172a"/>
+          <rect x="300" y="350" width="300" height="110" rx="16" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+          <text x="326" y="386" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Project Repository</text>
+          <text x="326" y="414" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">README / 项目定位 / 结构演进</text>
+          <text x="326" y="434" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">协议方向 / roadmap / 代码沉淀</text>
+
+          <rect x="640" y="350" width="260" height="110" rx="16" fill="#0f172a"/>
+          <rect x="640" y="350" width="260" height="110" rx="16" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+          <text x="666" y="386" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Future Expansion</text>
+          <text x="666" y="414" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">更多设备模型 / 场景演示</text>
+          <text x="666" y="434" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">文档完善 / 在线展示增强</text>
+        </svg>
+        <div class="diagram-caption">这张示意图不是在宣称全部能力都已完整落地，而是把当前仓库已经明确的工程骨架画出来：从工业协议入口，到设备行为模拟，再到 Web 展示与仓库沉淀。这样访问者进入 GitHub 时，会更容易理解自己正在查看什么。</div>
       </div>
     </section>
 
