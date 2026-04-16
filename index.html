@@ -293,6 +293,105 @@
       margin-top: 8px;
     }
 
+    .project-showcase {
+      margin-top: 28px;
+      padding: 24px;
+      border-radius: 24px;
+      background: rgba(8, 15, 32, 0.22);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .project-showcase-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .project-showcase-header h3 {
+      font-size: 1.28rem;
+      color: #fff4d6;
+      margin-bottom: 6px;
+    }
+
+    .project-showcase-header p {
+      color: var(--muted-soft);
+      line-height: 1.75;
+      max-width: 720px;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .project-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .project-card .card-tag {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,230,109,0.12);
+      border: 1px solid rgba(255,230,109,0.18);
+      color: rgba(255,240,202,0.9);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .project-card h4 {
+      font-size: 1.08rem;
+      color: #ffffff;
+      line-height: 1.45;
+    }
+
+    .project-card p {
+      color: var(--muted);
+      line-height: 1.78;
+      font-size: 0.94rem;
+    }
+
+    .project-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .project-meta span {
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(78,205,196,0.1);
+      border: 1px solid rgba(78,205,196,0.18);
+      color: #ddfbf8;
+      font-size: 0.8rem;
+    }
+
+    .project-card a {
+      margin-top: auto;
+      color: #ffeaa6;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .project-card a:hover {
+      color: #fff4cf;
+    }
+
     .stat-row,
     .link-list,
     .stack-list,
@@ -543,6 +642,29 @@
       .cta-button {
         width: 100%;
       }
+      .hero-actions .ghost {
+        width: auto;
+        min-height: auto;
+        padding: 0;
+        border: none;
+        background: transparent;
+        justify-content: flex-start;
+      }
+      .cta-note {
+        display: none;
+      }
+      .project-showcase {
+        padding: 18px;
+      }
+      .project-card {
+        padding: 16px;
+      }
+      .project-meta span:nth-child(n+3) {
+        display: none;
+      }
+      .stack-items .stack-pill:nth-child(n+7) {
+        display: none;
+      }
       .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .title-block h1 { font-size: 2rem; }
       .section-title { margin-bottom: 10px; }
@@ -569,7 +691,7 @@
           <div class="title-block">
             <p class="title-kicker">Hi, I'm openshane</p>
             <h1>构建能运行、能展示的工业硬件体验</h1>
-            <p class="subtitle">当前主推项目：IndustrialSim · 工业硬件仿真平台</p>
+            <p class="subtitle">当前聚焦 IndustrialSim，探索工业设备仿真、Web 展示与更清晰的项目表达。</p>
             <p class="hero-description">我正在持续构建能落地、能演示、也能在线传播的项目，并尝试用更清晰的交互与页面表达，把技术价值直接展示出来。</p>
           </div>
         </div>
@@ -611,21 +733,45 @@
           <span class="tag">🎨 创意交互实验</span>
         </div>
 
+        <section class="project-showcase">
+          <div class="project-showcase-header">
+            <div>
+              <h3>更多项目与实验</h3>
+              <p>首页重点已经放在 IndustrialSim，这里补充另外两个能快速了解我表达方式与持续输出节奏的入口：一个是个人站本身，一个是交互式实验方向。</p>
+            </div>
+          </div>
+          <div class="project-grid">
+            <article class="project-card">
+              <span class="card-tag">site build</span>
+              <h4>openshane.github.io</h4>
+              <p>我的 GitHub Pages 个人站，用来承载首页、项目叙事与交互视觉实验，也是持续优化产品表达与个人品牌的实验场。</p>
+              <div class="project-meta">
+                <span>GitHub Pages</span>
+                <span>Landing Page</span>
+                <span>个人站</span>
+              </div>
+              <a href="https://github.com/openshane/openshane.github.io" target="_blank" rel="noopener noreferrer">查看站点源码 ↗</a>
+            </article>
+
+            <article class="project-card">
+              <span class="card-tag">in progress</span>
+              <h4>交互表达实验</h4>
+              <p>围绕 Three.js、动态卡片和小票式信息呈现做持续尝试，目标不是炫技，而是把技术内容讲得更直观、更易记住。</p>
+              <div class="project-meta">
+                <span>Three.js</span>
+                <span>Creative UI</span>
+                <span>体验设计</span>
+              </div>
+              <a href="https://github.com/openshane/openshane" target="_blank" rel="noopener noreferrer">查看更多实验 ↗</a>
+            </article>
+          </div>
+        </section>
+
         <div class="hero-summary">
           <div class="summary-column">
-            <section class="stat-row compact-panel">
-              <h3 class="section-title">我的概览</h3>
-              <div class="stat-grid">
-                <div class="stat-item"><span class="stat-value">01</span><span class="stat-label">先看代表作</span></div>
-                <div class="stat-item"><span class="stat-value">Web × Auto</span><span class="stat-label">当前主轴</span></div>
-                <div class="stat-item"><span class="stat-value">IndSim</span><span class="stat-label">正在主推</span></div>
-                <div class="stat-item"><span class="stat-value">Now</span><span class="stat-label">持续迭代中</span></div>
-              </div>
-            </section>
-
             <section class="link-list compact-panel">
-              <h3 class="section-title">继续探索</h3>
-              <p class="section-lead">代表项目之外，这里是进一步了解我代码沉淀、交流方式和后续更新的入口。</p>
+              <h3 class="section-title">联系与入口</h3>
+              <p class="section-lead">如果你已经看过代表项目，这里可以继续查看代码沉淀、站点入口，或直接联系我交流合作。</p>
               <div class="quick-links">
                 <a href="https://github.com/openshane" target="_blank" rel="noopener noreferrer">
                   <span>
