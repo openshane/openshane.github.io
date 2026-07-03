@@ -35,8 +35,156 @@
 
     .page-shell {
       position: relative;
+      z-index: 1;
       min-height: 100vh;
       padding: 42px 28px 36px;
+    }
+
+    /* ===== 动态背景层：极光 + 网格 + 星尘 ===== */
+    .bg-effects {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.55;
+      mix-blend-mode: screen;
+      animation: blobFloat 18s ease-in-out infinite alternate;
+    }
+
+    .bg-blob.b1 {
+      width: 540px;
+      height: 540px;
+      top: -160px;
+      left: -140px;
+      background: radial-gradient(circle, rgba(78, 205, 196, 0.42), transparent 65%);
+    }
+
+    .bg-blob.b2 {
+      width: 620px;
+      height: 620px;
+      top: 18%;
+      right: -200px;
+      background: radial-gradient(circle, rgba(255, 107, 107, 0.32), transparent 65%);
+      animation-delay: -6s;
+      animation-duration: 23s;
+    }
+
+    .bg-blob.b3 {
+      width: 480px;
+      height: 480px;
+      bottom: -200px;
+      left: 30%;
+      background: radial-gradient(circle, rgba(255, 230, 109, 0.22), transparent 65%);
+      animation-delay: -12s;
+      animation-duration: 27s;
+    }
+
+    @keyframes blobFloat {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to   { transform: translate3d(70px, 46px, 0) scale(1.18); }
+    }
+
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(160, 190, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(160, 190, 255, 0.05) 1px, transparent 1px);
+      background-size: 46px 46px;
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(0,0,0,0.9), transparent 78%);
+      mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, rgba(0,0,0,0.9), transparent 78%);
+    }
+
+    #stars {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ===== 流光标题 ===== */
+    @keyframes titleShine {
+      to { background-position: 200% center; }
+    }
+
+    /* ===== 头像旋转渐变环 ===== */
+    @property --ring-angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes ringSpin {
+      to { --ring-angle: 360deg; }
+    }
+
+    /* ===== 入场动画 ===== */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: var(--reveal-delay, 0s);
+    }
+
+    [data-reveal].revealed {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ===== 卡片聚光 ===== */
+    .glow-card {
+      position: relative;
+    }
+
+    .glow-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%),
+                  rgba(255, 230, 109, 0.09), transparent 62%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .glow-card:hover::after {
+      opacity: 1;
+    }
+
+    /* ===== 主按钮流光扫过 ===== */
+    @keyframes ctaSheen {
+      0%, 55% { left: -60%; }
+      100% { left: 140%; }
+    }
+
+    ::selection {
+      background: rgba(255, 230, 109, 0.35);
+      color: #fff;
+    }
+
+    ::-webkit-scrollbar { width: 10px; }
+    ::-webkit-scrollbar-track { background: #131c33; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #4ecdc4, #2b5f9e);
+      border-radius: 8px;
+      border: 2px solid #131c33;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bg-blob { animation: none; }
+      [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
     }
 
     .grid {
@@ -85,18 +233,32 @@
       height: 96px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid rgba(255,255,255,0.16);
-      box-shadow: 0 10px 28px rgba(0,0,0,0.25);
+      border: 3px solid transparent;
+      background:
+        linear-gradient(#1a2440, #1a2440) padding-box,
+        conic-gradient(from var(--ring-angle, 0deg), #ff6b6b, #ffe66d, #4ecdc4, #6c8cff, #ff6b6b) border-box;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25), 0 0 24px rgba(78, 205, 196, 0.22);
+      animation: ringSpin 6s linear infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .avatar { animation: none; }
     }
 
     .title-block h1 {
       font-size: clamp(2rem, 4.6vw, 3.3rem);
       line-height: 1.08;
       margin-bottom: 10px;
-      background: linear-gradient(90deg, #ffffff, #ffe66d 50%, #4ecdc4 100%);
+      background: linear-gradient(90deg, #ffffff, #ffe66d 28%, #4ecdc4 52%, #ff8f8f 74%, #ffffff);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      animation: titleShine 7s linear infinite;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .title-block h1 { animation: none; }
     }
 
     .title-kicker {
@@ -172,6 +334,8 @@
       border-radius: 14px;
       text-decoration: none;
       font-weight: 700;
+      position: relative;
+      overflow: hidden;
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background .18s ease;
     }
 
@@ -179,6 +343,23 @@
       color: #0f1b2d;
       background: linear-gradient(135deg, #ffe66d, #ffd166);
       box-shadow: 0 10px 24px rgba(255, 230, 109, 0.24);
+    }
+
+    .cta-button.primary::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -60%;
+      width: 38%;
+      height: 100%;
+      background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+      transform: skewX(-20deg);
+      animation: ctaSheen 4.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cta-button.primary::before { animation: none; left: -60%; }
     }
 
     .cta-button.secondary {
@@ -683,6 +864,13 @@
   </style>
 </head>
 <body>
+  <div class="bg-effects" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+    <div class="bg-grid"></div>
+    <canvas id="stars"></canvas>
+  </div>
   <div class="page-shell">
     <div class="grid">
       <main class="panel hero-card">
@@ -1476,6 +1664,119 @@
       renderer.render(scene, camera);
     }
     animate();
+  </script>
+
+  <script>
+    // ===== 页面视觉效果：星尘粒子 / 入场动画 / 卡片聚光 / 3D 倾斜 =====
+    (function () {
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finePointer = window.matchMedia('(pointer: fine)').matches;
+
+      // --- 星尘粒子背景 ---
+      const starCanvas = document.getElementById('stars');
+      const sctx = starCanvas.getContext('2d');
+      let stars = [];
+
+      function resizeStars() {
+        starCanvas.width = window.innerWidth;
+        starCanvas.height = window.innerHeight;
+        const count = Math.min(140, Math.floor(window.innerWidth * window.innerHeight / 14000));
+        stars = Array.from({ length: count }, () => ({
+          x: Math.random() * starCanvas.width,
+          y: Math.random() * starCanvas.height,
+          r: Math.random() * 1.5 + 0.4,
+          vy: Math.random() * 0.12 + 0.03,
+          phase: Math.random() * Math.PI * 2,
+          speed: Math.random() * 0.014 + 0.006
+        }));
+        if (reducedMotion) drawStars(true);
+      }
+
+      function drawStars(staticFrame) {
+        sctx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+        for (const s of stars) {
+          const alpha = staticFrame ? 0.5 : 0.32 + 0.42 * (0.5 + 0.5 * Math.sin(s.phase));
+          sctx.beginPath();
+          sctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          sctx.fillStyle = `rgba(214, 228, 255, ${alpha.toFixed(3)})`;
+          sctx.fill();
+          if (!staticFrame) {
+            s.phase += s.speed;
+            s.y -= s.vy;
+            if (s.y < -4) {
+              s.y = starCanvas.height + 4;
+              s.x = Math.random() * starCanvas.width;
+            }
+          }
+        }
+      }
+
+      function starLoop() {
+        drawStars(false);
+        requestAnimationFrame(starLoop);
+      }
+
+      window.addEventListener('resize', resizeStars);
+      resizeStars();
+      if (!reducedMotion) starLoop();
+
+      // --- 滚动入场动画 ---
+      const revealTargets = document.querySelectorAll(
+        '.hero-top, .hero-actions, .featured-project, .tags, .project-showcase, .project-card, .hero-summary, .receipt-showcase, .footer-note'
+      );
+      revealTargets.forEach((el, i) => {
+        el.setAttribute('data-reveal', '');
+        el.style.setProperty('--reveal-delay', `${Math.min(i * 0.07, 0.42)}s`);
+      });
+
+      if (reducedMotion || !('IntersectionObserver' in window)) {
+        revealTargets.forEach(el => el.classList.add('revealed'));
+      } else {
+        const observer = new IntersectionObserver(entries => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+              observer.unobserve(entry.target);
+            }
+          }
+        }, { threshold: 0.12 });
+        revealTargets.forEach(el => observer.observe(el));
+      }
+
+      // --- 卡片聚光（跟随鼠标的柔光） ---
+      if (finePointer) {
+        const glowTargets = document.querySelectorAll(
+          '.hero-card, .featured-project, .project-showcase, .project-card, .compact-panel, .about-box, .project-highlight'
+        );
+        glowTargets.forEach(el => {
+          el.classList.add('glow-card');
+          el.addEventListener('pointermove', e => {
+            const rect = el.getBoundingClientRect();
+            el.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+            el.style.setProperty('--my', `${e.clientY - rect.top}px`);
+          });
+        });
+      }
+
+      // --- 项目卡片 3D 倾斜 ---
+      if (finePointer && !reducedMotion) {
+        const MAX_TILT = 5;
+        document.querySelectorAll('.project-card, .project-highlight').forEach(el => {
+          el.addEventListener('pointermove', e => {
+            const rect = el.getBoundingClientRect();
+            const px = (e.clientX - rect.left) / rect.width - 0.5;
+            const py = (e.clientY - rect.top) / rect.height - 0.5;
+            el.style.transition = 'transform 0.08s ease-out';
+            el.style.transform =
+              `perspective(700px) rotateX(${(-py * MAX_TILT).toFixed(2)}deg) rotateY(${(px * MAX_TILT).toFixed(2)}deg) translateY(-2px)`;
+          });
+          el.addEventListener('pointerleave', () => {
+            el.style.transition = 'transform 0.4s ease';
+            el.style.transform = '';
+          });
+        });
+      }
+    })();
   </script>
 </body>
 </html>
