@@ -5,8 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IndustrialSim - 工业硬件仿真平台</title>
   <meta name="description" content="IndustrialSim 是一个面向工业硬件设备的仿真平台，聚焦可运行、可讲解、可在线展示的工业协议与设备逻辑表达。">
+  <link rel="canonical" href="https://openshane.github.io/projects/industrialsim.html">
+  <meta name="theme-color" content="#091120">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:site_name" content="openshane">
+  <meta property="og:title" content="IndustrialSim - 工业硬件仿真平台">
+  <meta property="og:description" content="面向工业硬件设备的仿真平台：让协议与设备逻辑可运行、可讲解、可在线展示。">
+  <meta property="og:url" content="https://openshane.github.io/projects/industrialsim.html">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap');
 
     :root {
       --bg: #091120;
@@ -35,6 +45,12 @@
     }
 
     a { color: inherit; }
+
+    a:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 4px;
+      border-radius: 8px;
+    }
 
     .page {
       max-width: 1240px;
@@ -353,6 +369,11 @@
       text-align: left;
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .btn { transition: none; }
+      .btn:hover { transform: none; }
+    }
+
     @media (max-width: 980px) {
       .hero,
       .split {
@@ -380,10 +401,12 @@
 </head>
 <body>
   <div class="page">
-    <div class="topbar">
+    <nav class="topbar" aria-label="面包屑导航">
       <a class="crumb" href="../index.html">← 返回首页</a>
-      <span class="crumb">IndustrialSim / 项目详情页</span>
-    </div>
+      <span class="crumb" aria-current="page">IndustrialSim / 项目详情页</span>
+    </nav>
+
+    <main>
 
     <section class="panel hero">
       <div>
@@ -478,7 +501,9 @@
       </div>
 
       <div class="diagram-shell">
-        <svg viewBox="0 0 1080 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="IndustrialSim architecture overview">
+        <svg viewBox="0 0 1080 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-title architecture-description">
+          <title id="architecture-title">IndustrialSim 架构概览</title>
+          <desc id="architecture-description">从应用场景进入 Modbus 与 OPC-UA 协议层，再驱动设备行为模拟和 Web 展示；协议与设备逻辑同时沉淀到项目仓库，并为更多设备模型与场景扩展提供基础。</desc>
           <defs>
             <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
               <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.6"/>
@@ -491,8 +516,8 @@
           <rect width="1080" height="520" fill="#020617"/>
           <rect width="1080" height="520" fill="url(#grid)"/>
 
-          <text x="60" y="56" fill="#f8fafc" font-size="24" font-family="JetBrains Mono, monospace">IndustrialSim architecture overview</text>
-          <text x="60" y="84" fill="#94a3b8" font-size="12" font-family="JetBrains Mono, monospace">Current focus: protocol simulation + device behavior + web-based presentation</text>
+          <text x="60" y="56" fill="#f8fafc" font-size="24" font-family="Fira Code, monospace">IndustrialSim architecture overview</text>
+          <text x="60" y="84" fill="#94a3b8" font-size="12" font-family="Fira Code, monospace">Current focus: protocol simulation + device behavior + web-based presentation</text>
 
           <line x1="220" y1="180" x2="360" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
           <line x1="540" y1="180" x2="680" y2="180" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
@@ -502,39 +527,39 @@
 
           <rect x="60" y="128" width="160" height="104" rx="14" fill="#0f172a"/>
           <rect x="60" y="128" width="160" height="104" rx="14" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
-          <text x="80" y="160" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Use Cases</text>
-          <text x="80" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">调试 / 演示 / 教学</text>
-          <text x="80" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">远程展示 / 原型验证</text>
+          <text x="80" y="160" fill="#f8fafc" font-size="18" font-family="Fira Code, monospace">Use Cases</text>
+          <text x="80" y="188" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">调试 / 演示 / 教学</text>
+          <text x="80" y="208" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">远程展示 / 原型验证</text>
 
           <rect x="360" y="128" width="180" height="104" rx="14" fill="#0f172a"/>
           <rect x="360" y="128" width="180" height="104" rx="14" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
-          <text x="382" y="160" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Protocol Layer</text>
-          <text x="382" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">Modbus</text>
-          <text x="382" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">OPC-UA</text>
+          <text x="382" y="160" fill="#f8fafc" font-size="18" font-family="Fira Code, monospace">Protocol Layer</text>
+          <text x="382" y="188" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">Modbus</text>
+          <text x="382" y="208" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">OPC-UA</text>
 
           <rect x="680" y="128" width="180" height="104" rx="14" fill="#0f172a"/>
           <rect x="680" y="128" width="180" height="104" rx="14" fill="rgba(6, 78, 59, 0.4)" stroke="#34d399" stroke-width="1.5"/>
-          <text x="706" y="160" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Device Logic</text>
-          <text x="706" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">状态变化 / 行为模拟</text>
-          <text x="706" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">异常与交互表达</text>
+          <text x="706" y="160" fill="#f8fafc" font-size="18" font-family="Fira Code, monospace">Device Logic</text>
+          <text x="706" y="188" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">状态变化 / 行为模拟</text>
+          <text x="706" y="208" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">异常与交互表达</text>
 
           <rect x="900" y="128" width="120" height="104" rx="14" fill="#0f172a"/>
           <rect x="900" y="128" width="120" height="104" rx="14" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
-          <text x="922" y="160" fill="#f8fafc" font-size="17" font-family="JetBrains Mono, monospace">Web UI</text>
-          <text x="922" y="188" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">展示 / 讲解</text>
-          <text x="922" y="208" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">传播入口</text>
+          <text x="922" y="160" fill="#f8fafc" font-size="17" font-family="Fira Code, monospace">Web UI</text>
+          <text x="922" y="188" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">展示 / 讲解</text>
+          <text x="922" y="208" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">传播入口</text>
 
           <rect x="300" y="350" width="300" height="110" rx="16" fill="#0f172a"/>
           <rect x="300" y="350" width="300" height="110" rx="16" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
-          <text x="326" y="386" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Project Repository</text>
-          <text x="326" y="414" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">README / 项目定位 / 结构演进</text>
-          <text x="326" y="434" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">协议方向 / roadmap / 代码沉淀</text>
+          <text x="326" y="386" fill="#f8fafc" font-size="18" font-family="Fira Code, monospace">Project Repository</text>
+          <text x="326" y="414" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">README / 项目定位 / 结构演进</text>
+          <text x="326" y="434" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">协议方向 / roadmap / 代码沉淀</text>
 
           <rect x="640" y="350" width="260" height="110" rx="16" fill="#0f172a"/>
           <rect x="640" y="350" width="260" height="110" rx="16" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
-          <text x="666" y="386" fill="#f8fafc" font-size="18" font-family="JetBrains Mono, monospace">Future Expansion</text>
-          <text x="666" y="414" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">更多设备模型 / 场景演示</text>
-          <text x="666" y="434" fill="#cbd5e1" font-size="12" font-family="JetBrains Mono, monospace">文档完善 / 在线展示增强</text>
+          <text x="666" y="386" fill="#f8fafc" font-size="18" font-family="Fira Code, monospace">Future Expansion</text>
+          <text x="666" y="414" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">更多设备模型 / 场景演示</text>
+          <text x="666" y="434" fill="#cbd5e1" font-size="12" font-family="Fira Code, monospace">文档完善 / 在线展示增强</text>
         </svg>
         <div class="diagram-caption">这张示意图不是在宣称全部能力都已完整落地，而是把当前仓库已经明确的工程骨架画出来：从工业协议入口，到设备行为模拟，再到 Web 展示与仓库沉淀。这样访问者进入 GitHub 时，会更容易理解自己正在查看什么。</div>
       </div>
@@ -628,7 +653,9 @@
       </div>
     </section>
 
-    <div class="footer-note">IndustrialSim detail page · handcrafted for openshane.github.io</div>
+    </main>
+
+    <footer class="footer-note">IndustrialSim detail page · handcrafted for openshane.github.io</footer>
   </div>
 </body>
 </html>
