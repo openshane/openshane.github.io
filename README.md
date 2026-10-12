@@ -8,8 +8,13 @@ Personal GitHub Pages site for presenting IndustrialSim, industrial hardware sim
 - `projects/industrialsim.html` — IndustrialSim detail page
 - `assets/styles.css` — shared warm paper visual system
 - `assets/receipt.js` — interactive Three.js receipt
+- `assets/receipt-collisions.js` — swept surface contacts for folded receipt layers
 - `assets/home-effects.js` — finite homepage effects
 - `tests/site.test.js` — zero-dependency static contract tests
+- `tests/receipt.test.js` — deterministic receipt layout, physics, and lifecycle regression tests
+- `tests/receipt-collisions.test.js` — surface contact and fast-drag collision regressions
+
+Receipt grabbing is adapted from [Holocloth](https://github.com/dmitrykurash/holocloth); its MIT notice is retained in `assets/licenses/holocloth.txt`.
 
 ## Local preview
 

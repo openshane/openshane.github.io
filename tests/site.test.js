@@ -100,13 +100,12 @@ test('inline diagrams use the shared warm-paper palette and mono stack', () => {
   }
 });
 
-test('receipt scene uses warm-paper wall and light colors', () => {
+test('receipt scene uses a subtle warm shadow and matte paper', () => {
   const receipt = read('assets/receipt.js');
 
-  assert.match(receipt, /MeshLambertMaterial\(\{ color: 0xe9e5dc,/);
-  assert.match(receipt, /AmbientLight\(0xfaf8f2, 0\.52\)/);
-  assert.match(receipt, /DirectionalLight\(0xf3f0e8, 0\.82\)/);
-  assert.match(receipt, /DirectionalLight\(0xf2d9ce, 0\.3\)/);
+  assert.match(receipt, /ShadowMaterial\(\{ color: 0x746d63, opacity: 0\.18/);
+  assert.match(receipt, /new THREE\.MeshLambertMaterial/);
+  assert.match(receipt, /renderer\.shadowMap\.type = THREE\.VSMShadowMap/);
   assert.doesNotMatch(receipt, /0xcad5eb|0xf7f7ff|0xfff1d4|0xc9dcff/);
 });
 
@@ -125,6 +124,8 @@ test('receipt is external and preserves lifecycle fallbacks', () => {
   const home = read('index.html');
   const receipt = read('assets/receipt.js');
 
+  assert.match(home, /<script defer src="assets\/receipt-collisions\.js"><\/script>[\s\S]*?three\.min\.js"><\/script>\s*<script defer src="assets\/receipt\.js"><\/script>/);
+
   assert.match(home, /three\.min\.js"><\/script>\s*<script defer src="assets\/receipt\.js"><\/script>/);
   assert.equal(countMatches(home, /<script(?![^>]*\bsrc=)[^>]*>/g), 0);
   assert.match(receipt, /if \(!window\.THREE\)/);
@@ -136,7 +137,7 @@ test('receipt is external and preserves lifecycle fallbacks', () => {
   assert.doesNotMatch(receipt, /function animate\s*\(/);
 });
 
-test('external receipt keeps the legacy lifecycle and r128 contracts', () => {
+test('external receipt keeps visibility scheduling and r128 texture contracts', () => {
   const receipt = read('assets/receipt.js');
 
   assert.match(receipt, /new THREE\.WebGLRenderer/);
@@ -145,8 +146,6 @@ test('external receipt keeps the legacy lifecycle and r128 contracts', () => {
   assert.match(receipt, /receiptObserver\.observe\(wrap\)/);
   assert.match(receipt, /updateProfileTimer\(\)/);
   assert.match(receipt, /if \(prefersReducedMotion \|\| !canRunReceipt\(\)\) return/);
-  assert.match(receipt, /scheduleReceiptFrame\(36\)/);
-  assert.match(receipt, /scheduleReceiptFrame\(18\)/);
   assert.match(receipt, /texture\.encoding\s*=\s*THREE\.sRGBEncoding/);
   assert.match(receipt, /setInterval\([\s\S]*?scheduleReceiptFrame\(1\)[\s\S]*?,\s*60000\)/);
   assert.doesNotMatch(receipt, /window\.receiptDebug/);

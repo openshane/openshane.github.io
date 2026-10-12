@@ -595,10 +595,12 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       align-items: flex-end;
       gap: 14px;
       min-height: 560px;
-      opacity: 0.9;
     }
 
     body.home-page .receipt-showcase{
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
       width: min(332px, 100%);
       padding: 16px;
       border-radius: 28px;
@@ -638,13 +640,14 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 
     body.home-page #receipt-wrap{
       width: 100%;
-      height: 392px;
+      height: 400px;
+      flex: none;
       position: relative;
       border-radius: 22px;
       overflow: hidden;
-      background: var(--surface-soft);
+      background: radial-gradient(ellipse at 45% 30%, var(--surface), var(--surface-soft));
       border: 1px solid var(--border);
-      box-shadow: var(--shadow);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
     }
 
     body.home-page #receipt-wrap canvas{
@@ -652,9 +655,10 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       width: 100%;
       height: 100%;
       cursor: grab;
+      user-select: none;
     }
 
-    body.home-page #receipt-wrap canvas:active{ cursor: grabbing; }
+    body.home-page #receipt-wrap.is-dragging canvas{ cursor: grabbing; }
 
     body.home-page .receipt-fallback{
       display: grid;
@@ -671,9 +675,10 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 
     body.home-page .receipt-tip{
       font-family: var(--font-mono);
-      font-size: 0.82rem;
+      font-size: 0.74rem;
       color: var(--muted);
-      letter-spacing: 0.08em;
+      letter-spacing: 0.01em;
+      line-height: 1.65;
       text-align: left;
       padding: 0 2px;
     }
@@ -763,7 +768,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       body.home-page .quick-links a{
         padding: 14px 16px;
       }
-      body.home-page #receipt-wrap{ height: 300px; }
+      body.home-page #receipt-wrap{ height: 360px; }
       body.home-page .receipt-caption{
         max-width: 100%;
       }
