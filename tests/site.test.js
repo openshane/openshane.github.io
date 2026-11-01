@@ -12,7 +12,7 @@ const pageContracts = [
   { file: 'projects/industrialsim.html', canonical: 'https://openshane.github.io/projects/industrialsim.html' }
 ];
 
-test('pages use the shared warm paper stylesheet', () => {
+test('pages use the shared Anthropic brand stylesheet', () => {
   const home = read('index.html');
   const detail = read('projects/industrialsim.html');
   const css = read('assets/styles.css');
@@ -25,9 +25,9 @@ test('pages use the shared warm paper stylesheet', () => {
   assert.equal(countMatches(detail, /<style\b/g), 0);
 
   for (const token of [
-    '--page-bg: #e9e5dc', '--surface: #faf8f2', '--surface-soft: #f3f0e8',
-    '--text: #27241f', '--muted: #716a60', '--accent: #c96445',
-    '--olive: #72734f', '--border: #cfc7ba'
+    '--page-bg: #faf9f5', '--surface: #faf9f5', '--surface-soft: #e8e6dc',
+    '--text: #141413', '--muted: #62615b', '--accent: #d97757',
+    '--blue: #6a9bcc', '--olive: #788c5d', '--border: #b0aea5'
   ]) assert.ok(css.includes(token), `missing CSS token: ${token}`);
 });
 
@@ -57,11 +57,11 @@ test('each page has one main heading, one canonical URL, and valid local targets
   }
 });
 
-test('stylesheet has one authoritative warm-paper theme without legacy decoration', () => {
+test('stylesheet has one authoritative Anthropic theme without legacy decoration', () => {
   const css = read('assets/styles.css');
 
-  assert.match(css, /--on-accent: #17130f/);
-  assert.match(css, /--accent-text: #8f402b/);
+  assert.match(css, /--on-accent: #141413/);
+  assert.match(css, /--accent-text: #98472e/);
   assert.match(css, /body\.home-page \.cta-button\.primary,[\s\S]*?body\.project-page \.btn\.primary \{\s*color: var\(--on-accent\);\s*background: var\(--accent\);/);
   assert.equal(countMatches(css, /body\.home-page \.protocol-flow\s*\{/g), 1);
   assert.doesNotMatch(css, /Warm paper palette overrides/);
@@ -81,7 +81,7 @@ test('small eyebrow labels use the high-contrast accent text token', () => {
   assert.match(css, /body\.project-page \.eyebrow\{[^}]*color: var\(--accent-text\);/);
 });
 
-test('inline diagrams use the shared warm-paper palette and mono stack', () => {
+test('inline diagrams use the shared Anthropic palette and mono stack', () => {
   const home = read('index.html');
   const detail = read('projects/industrialsim.html');
 
@@ -100,10 +100,10 @@ test('inline diagrams use the shared warm-paper palette and mono stack', () => {
   }
 });
 
-test('receipt scene uses a subtle warm shadow and matte paper', () => {
+test('receipt scene uses a subtle brand-dark shadow and matte paper', () => {
   const receipt = read('assets/receipt.js');
 
-  assert.match(receipt, /ShadowMaterial\(\{ color: 0x746d63, opacity: 0\.18/);
+  assert.match(receipt, /ShadowMaterial\(\{ color: 0x141413, opacity: 0\.12/);
   assert.match(receipt, /new THREE\.MeshLambertMaterial/);
   assert.match(receipt, /renderer\.shadowMap\.type = THREE\.VSMShadowMap/);
   assert.doesNotMatch(receipt, /0xcad5eb|0xf7f7ff|0xfff1d4|0xc9dcff/);
@@ -153,14 +153,14 @@ test('external receipt keeps visibility scheduling and r128 texture contracts', 
   assert.doesNotMatch(receipt, /texture\.colorSpace\s*=/);
 });
 
-test('pages expose warm paper metadata and valid internal links', () => {
+test('pages expose Anthropic light metadata and valid internal links', () => {
   const home = read('index.html');
   const detail = read('projects/industrialsim.html');
 
   assert.match(home, /<link rel="icon" type="image\/svg\+xml" href="assets\/favicon\.svg">/);
   assert.match(detail, /<link rel="icon" type="image\/svg\+xml" href="\.\.\/assets\/favicon\.svg">/);
-  assert.match(home, /<meta name="theme-color" content="#e9e5dc">/);
-  assert.match(detail, /<meta name="theme-color" content="#e9e5dc">/);
+  assert.match(home, /<meta name="theme-color" content="#faf9f5">/);
+  assert.match(detail, /<meta name="theme-color" content="#faf9f5">/);
   assert.match(home, /<a href="\/"[^>]*>[\s\S]*?当前主页/);
   assert.match(home, /href="projects\/industrialsim\.html"/);
   assert.match(detail, /href="\.\.\/index\.html"/);

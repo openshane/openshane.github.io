@@ -255,14 +255,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const wallMesh = new THREE.Mesh(
       new THREE.PlaneGeometry(20, 20),
-      new THREE.ShadowMaterial({ color: 0x746d63, opacity: 0.18 })
+      new THREE.ShadowMaterial({ color: 0x141413, opacity: 0.12 })
     );
     wallMesh.position.z = -0.055;
     wallMesh.receiveShadow = true;
     scene.add(wallMesh);
 
-    scene.add(new THREE.AmbientLight(0xfaf8f2, 0.78));
-    const sun = new THREE.DirectionalLight(0xf3f0e8, 0.55);
+    scene.add(new THREE.AmbientLight(0xfaf9f5, 0.78));
+    const sun = new THREE.DirectionalLight(0xfaf9f5, 0.55);
     sun.position.set(-3, 4, 7);
     sun.castShadow = true;
     sun.shadow.mapSize.width = 1024;
@@ -276,7 +276,7 @@ window.addEventListener('DOMContentLoaded', () => {
     sun.shadow.radius = 4;
     sun.shadow.bias = -0.0002;
     scene.add(sun);
-    const fill = new THREE.DirectionalLight(0xf2d9ce, 0.12);
+    const fill = new THREE.DirectionalLight(0xf4e2d9, 0.12);
     fill.position.set(3, -1, 2);
     scene.add(fill);
 
@@ -308,13 +308,14 @@ window.addEventListener('DOMContentLoaded', () => {
       // Match the 2:3 mesh ratio so the printing keeps its original proportions.
       const TW = 768, TH = 1152;
       const RECEIPT_COLORS = {
-        paper: '#f7f2e8',
-        paperShadow: '#eee5d7',
-        ink: '#2b2722',
-        muted: '#746d63',
-        accent: '#c96445',
-        olive: '#72734f',
-        rule: '#cfc7ba'
+        paper: '#faf9f5',
+        paperShadow: '#e8e6dc',
+        ink: '#141413',
+        muted: '#62615b',
+        accent: '#d97757',
+        olive: '#788c5d',
+        oliveText: '#536242',
+        rule: '#b0aea5'
       };
       const cv = document.createElement('canvas');
       cv.width = TW; cv.height = TH;
@@ -440,10 +441,10 @@ window.addEventListener('DOMContentLoaded', () => {
         wrapCenter(data.line, 326, 28, RECEIPT_COLORS.muted, 'normal', TW - 136, 12);
         HR(410);
 
-        L(data.focusLabel, 464, 24, RECEIPT_COLORS.olive, 'bold');
+        L(data.focusLabel, 464, 24, RECEIPT_COLORS.oliveText, 'bold');
         R(data.focusValue, 464, 28, RECEIPT_COLORS.ink, 'bold');
 
-        L(data.quoteLabel, 526, 24, RECEIPT_COLORS.olive, 'bold');
+        L(data.quoteLabel, 526, 24, RECEIPT_COLORS.oliveText, 'bold');
         const quoteEnd = wrapCenter(`“${data.quote}”`, 590, 30, RECEIPT_COLORS.ink, 'normal', TW - 144, 14);
         C(data.quoteBy, quoteEnd + 48, 24, RECEIPT_COLORS.muted);
 

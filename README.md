@@ -6,7 +6,7 @@ Personal GitHub Pages site for presenting IndustrialSim, industrial hardware sim
 
 - `index.html` — homepage
 - `projects/industrialsim.html` — IndustrialSim detail page
-- `assets/styles.css` — shared warm paper visual system
+- `assets/styles.css` — shared Claude / Anthropic color palette
 - `assets/receipt.js` — interactive Three.js receipt
 - `assets/receipt-collisions.js` — swept surface contacts for folded receipt layers
 - `assets/home-effects.js` — finite homepage effects
@@ -15,6 +15,8 @@ Personal GitHub Pages site for presenting IndustrialSim, industrial hardware sim
 - `tests/receipt-collisions.test.js` — surface contact and fast-drag collision regressions
 
 Receipt grabbing is adapted from [Holocloth](https://github.com/dmitrykurash/holocloth); its MIT notice is retained in `assets/licenses/holocloth.txt`.
+
+Colors follow [Anthropic's official brand guidelines](https://github.com/anthropics/skills/blob/main/skills/brand-guidelines/SKILL.md), with darker text variants for readable contrast on light surfaces.
 
 ## Local preview
 

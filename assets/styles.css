@@ -1,16 +1,20 @@
 :root {
-  --page-bg: #e9e5dc;
-  --surface: #faf8f2;
-  --surface-soft: #f3f0e8;
-  --text: #27241f;
-  --muted: #716a60;
-  --accent: #c96445;
-  --accent-soft: #f2d9ce;
-  --on-accent: #17130f;
-  --accent-text: #8f402b;
-  --olive: #72734f;
-  --border: #cfc7ba;
-  --shadow: 0 18px 48px rgba(67, 55, 43, 0.12);
+  /* Anthropic brand palette, with darker text variants for readable contrast. */
+  --page-bg: #faf9f5;
+  --surface: #faf9f5;
+  --surface-soft: #e8e6dc;
+  --text: #141413;
+  --muted: #62615b;
+  --accent: #d97757;
+  --accent-soft: #f4e2d9;
+  --on-accent: #141413;
+  --accent-text: #98472e;
+  --blue: #6a9bcc;
+  --blue-soft: #e4ebef;
+  --olive: #788c5d;
+  --olive-text: #536242;
+  --border: #b0aea5;
+  --shadow: 0 18px 48px rgba(20, 20, 19, 0.07);
   --font-serif: Georgia, 'Times New Roman', 'Noto Serif SC', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
   --font-mono: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
@@ -22,9 +26,9 @@ body {
   min-height: 100vh;
   color: var(--text);
   background:
-    radial-gradient(circle at 88% 4%, rgba(201, 100, 69, 0.12), transparent 26%),
-    linear-gradient(rgba(113, 106, 96, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(113, 106, 96, 0.055) 1px, transparent 1px),
+    radial-gradient(circle at 88% 4%, rgba(217, 119, 87, 0.10), transparent 26%),
+    linear-gradient(rgba(176, 174, 165, 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(176, 174, 165, 0.10) 1px, transparent 1px),
     var(--page-bg);
   background-size: auto, 28px 28px, 28px 28px, auto;
   font-family: var(--font-sans);
@@ -34,7 +38,7 @@ body {
 h1, h2 { font-family: var(--font-serif); font-weight: 400; }
 code, .eyebrow, .title-kicker, .card-tag { font-family: var(--font-mono); }
 a { color: inherit; }
-a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+a:focus-visible { outline: 3px solid var(--accent-text); outline-offset: 4px; }
 
     body.home-page .page-shell{
       position: relative;
@@ -67,7 +71,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       inset: 0;
       border-radius: inherit;
       background: radial-gradient(300px circle at var(--mx, 50%) var(--my, 50%),
-                  rgba(201, 100, 69, 0.08), transparent 62%);
+                  rgba(217, 119, 87, 0.08), transparent 62%);
       opacity: 0;
       transition: opacity 0.3s ease;
       pointer-events: none;
@@ -128,7 +132,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       inset: auto -10% -55% auto;
       width: 280px;
       height: 280px;
-      background: radial-gradient(circle, rgba(201, 100, 69, 0.12), transparent 60%);
+      background: radial-gradient(circle, rgba(217, 119, 87, 0.10), transparent 60%);
       pointer-events: none;
     }
 
@@ -164,7 +168,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       font-size: 0.82rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--olive);
+      color: var(--olive-text);
       margin-bottom: 12px;
     }
 
@@ -261,7 +265,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
     }
 
     body.home-page .cta-button.primary:hover{
-      box-shadow: 0 14px 32px rgba(67, 55, 43, 0.16);
+      box-shadow: 0 14px 32px rgba(20, 20, 19, 0.12);
     }
 
     body.home-page .cta-button.secondary:hover,
@@ -307,7 +311,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       font-size: 0.76rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-      color: var(--olive);
+      color: var(--olive-text);
       margin-bottom: 10px;
     }
 
@@ -647,7 +651,7 @@ a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
       overflow: hidden;
       background: radial-gradient(ellipse at 45% 30%, var(--surface), var(--surface-soft));
       border: 1px solid var(--border);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      box-shadow: inset 0 1px 0 rgba(250, 249, 245, 0.65);
     }
 
     body.home-page #receipt-wrap canvas{
